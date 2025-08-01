@@ -1,5 +1,5 @@
 export type Priority = "low" | "medium" | "high";
-export type Status = "todo" | "in_progress" | "done";
+export type Status = "todo" | "ongoing" | "done";
 
 export interface Todo {
   id: string;
@@ -30,8 +30,8 @@ export const COLUMNS: Column[] = [
     color: "bg-slate-100 border-slate-200"
   },
   {
-    id: "in_progress",
-    title: "In Progress",
+    id: "ongoing",
+    title: "Ongoing",
     description: "Currently being worked on",
     color: "bg-blue-50 border-blue-200"
   },

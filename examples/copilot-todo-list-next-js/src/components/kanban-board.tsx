@@ -195,7 +195,7 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
     switch (status) {
       case "todo":
         return <Circle className="h-4 w-4 text-slate-500" />;
-      case "in_progress":
+      case "ongoing":
         return <Clock className="h-4 w-4 text-blue-500" />;
       case "done":
         return <CheckCircle2 className="h-4 w-4 text-green-500" />;

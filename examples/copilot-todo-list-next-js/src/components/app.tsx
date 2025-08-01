@@ -11,7 +11,7 @@ import { useTheme, type Theme } from "@/components/theme-provider";
 
 // Initialize SDK
 YourGPT.init({
-  widgetId: "your-widget-id",
+  widgetId: process.env.NEXT_PUBLIC_WIDGET_ID || "",
 });
 
 interface ToolFunction {
@@ -60,10 +60,10 @@ export function App({ view }: AppProps) {
       return;
     }
 
-    const { status, category, priority, tag } = parsedArgs;
+    const { status, category, priority } = parsedArgs;
 
     // If no filters provided, default to deleting only completed tasks for safety
-    if (!status && !category && !priority && !tag) {
+    if (!status && !category && !priority) {
       setTodos((prevTodos) => {
         const remainingTodos = prevTodos.filter(todo => todo.status !== "done");
         const deletedCount = prevTodos.length - remainingTodos.length;
@@ -82,10 +82,9 @@ export function App({ view }: AppProps) {
         const matchesStatus = !status || todo.status === status;
         const matchesCategory = !category || todo.category === category;
         const matchesPriority = !priority || todo.priority === priority;
-        const matchesTag = !tag || (todo.tags && todo.tags.includes(tag));
 
         // Keep todos that DON'T match all the specified criteria
-        return !(matchesStatus && matchesCategory && matchesPriority && matchesTag);
+        return !(matchesStatus && matchesCategory && matchesPriority);
       });
 
       deletedCount = prevTodos.length - remainingTodos.length;
@@ -95,7 +94,6 @@ export function App({ view }: AppProps) {
       if (status) filters.push(`status "${status.replace("_", " ")}"`);
       if (category) filters.push(`category "${category}"`);
       if (priority) filters.push(`${priority} priority`);
-      if (tag) filters.push(`tag "${tag}"`);
 
       filterText = filters.length > 0 ? ` with ${filters.join(", ")}` : "";
 
@@ -104,88 +102,213 @@ export function App({ view }: AppProps) {
     action.respond(`Successfully deleted ${deletedCount} task${deletedCount !== 1 ? 's' : ''}${filterText}.`);
   }, []);
 
-  // Universal move function for todos based on category, priority, and status
+  // Enhanced universal move function for todos with comprehensive fallbacks and natural language support
   const moveTodosActionRef = useCallback((data: unknown, action: { respond: (message: string) => void }) => {
     const actionData = data as ActionData;
     const args = actionData.action?.tool?.function?.arguments || `{}`;
     let parsedArgs;
+
     try {
       parsedArgs = JSON.parse(args);
     } catch {
-      action.respond("Error parsing arguments.");
+      action.respond("❌ Error: Invalid command format. Please try again with a clear instruction like 'move tasks from todo to ongoing' or 'move media tasks from todo to done'.");
       return;
     }
 
-    const { category, priority, from, to, tag } = parsedArgs;
+    const { category, priority, from, to, task_ids } = parsedArgs;
 
-    // Validate required parameters
+    // Helper function to normalize status names (supports natural language)
+    const normalizeStatus = (status: string): Status | null => {
+      if (!status) return null;
+
+      const statusMap: Record<string, Status> = {
+        // Direct matches
+        'todo': 'todo',
+        'ongoing': 'ongoing',
+        'done': 'done',
+        // Natural language variations
+        'to do': 'todo',
+        'to-do': 'todo',
+        'pending': 'todo',
+        'backlog': 'todo',
+        'todo board': 'todo',
+        'to do board': 'todo',
+        // Ongoing variations
+        'in progress': 'ongoing',
+        'in-progress': 'ongoing',
+        'progress': 'ongoing',
+        'working': 'ongoing',
+        'active': 'ongoing',
+        'ongoing board': 'ongoing',
+        'in progress board': 'ongoing',
+        // Done variations
+        'complete': 'done',
+        'completed': 'done',
+        'finished': 'done',
+        'complete board': 'done',
+        'done board': 'done',
+        'completed board': 'done'
+      };
+
+      return statusMap[status.toLowerCase().trim()] || null;
+    };
+
+    // Validate and normalize status parameters
+    const fromStatus = normalizeStatus(from);
+    const toStatus = normalizeStatus(to);
+
     if (!from || !to) {
-      action.respond("Error: 'from' and 'to' status are required.");
+      action.respond("❌ Error: Both 'from' and 'to' boards are required. Try saying something like:\n• 'Move tasks from todo to ongoing'\n• 'Move media tasks from backlog to in progress'\n• 'Move high priority tasks from todo to done'");
       return;
     }
 
-    // Validate status values
-    const validStatuses = ["todo", "in_progress", "done"];
-    if (!validStatuses.includes(from) || !validStatuses.includes(to)) {
-      action.respond("Error: Invalid status. Valid statuses are: todo, in_progress, done");
+    if (!fromStatus || !toStatus) {
+      const validOptions = "• todo/to do/backlog/pending\n• ongoing/in progress/active/working\n• done/completed/finished";
+      action.respond(`❌ Error: Invalid board name(s). Valid board names include:\n${validOptions}\n\nYou said: from "${from}" to "${to}"`);
       return;
     }
 
-    let filterText = "";
-    let fromText = ''
-    let toText = ''
-    let movedCount = 0
+    if (fromStatus === toStatus) {
+      action.respond(`❌ Error: Cannot move tasks from "${from}" to "${to}" - they're the same board! Please specify different source and destination boards.`);
+      return;
+    }
+
+    // Validate priority if provided
+    if (priority && !["low", "medium", "high"].includes(priority.toLowerCase())) {
+      action.respond(`❌ Error: Invalid priority "${priority}". Valid priorities are: low, medium, high`);
+      return;
+    }
+
+    const normalizedPriority = priority?.toLowerCase() as Priority;
+
+    let movedCount = 0;
+    let fromText = '';
+    let toText = '';
+    let filterText = '';
 
     setTodos((prevTodos) => {
-      const updatedTodos = prevTodos.map(todo => {
-        // Check if todo matches all the criteria
-        const matchesStatus = todo.status === from;
-        const matchesCategory = !category || todo.category === category;
-        const matchesPriority = !priority || todo.priority === priority;
-        const matchesTag = !tag || (todo.tags && todo.tags.includes(tag));
+      // First, find todos that match the criteria
+      const matchingTodos = prevTodos.filter(todo => {
+        const matchesStatus = todo.status === fromStatus;
+        const matchesCategory = !category || todo.category?.toLowerCase() === category.toLowerCase();
+        const matchesPriority = !normalizedPriority || todo.priority === normalizedPriority;
+        const matchesTaskIds = !task_ids || task_ids.includes(todo.id);
 
-        if (matchesStatus && matchesCategory && matchesPriority && matchesTag) {
+
+        return matchesStatus && matchesCategory && matchesPriority && matchesTaskIds;
+      });
+
+      movedCount = matchingTodos.length;
+
+      // If no matching todos found, provide helpful feedback
+      if (movedCount === 0) {
+        return prevTodos; // Don't update state if no changes
+      }
+
+      // Update matching todos
+      const updatedTodos = prevTodos.map(todo => {
+        const shouldMove = matchingTodos.some(mt => mt.id === todo.id);
+        if (shouldMove) {
           return {
             ...todo,
-            status: to as Status,
+            status: toStatus,
             updatedAt: new Date()
           };
         }
         return todo;
       });
 
-      // Count moved todos
-      movedCount = updatedTodos.filter(todo =>
-        todo.status === to &&
-        prevTodos.some(pt =>
-          pt.id === todo.id &&
-          pt.status === from &&
-          (!category || pt.category === category) &&
-          (!priority || pt.priority === priority) &&
-          (!tag || (pt.tags && pt.tags.includes(tag)))
-        )
-      ).length;
-
-      // Build response message
+      // Build descriptive text for response
       const filters = [];
-      if (category) filters.push(`category "${category}"`);
-      if (priority) filters.push(`${priority} priority`);
-      if (tag) filters.push(`tag "${tag}"`);
-      filterText = filters.length > 0 ? ` with ${filters.join(", ")}` : "";
-      fromText = from.replace("_", " ");
-      toText = to.replace("_", " ");
+      if (category) filters.push(`"${category}" category`);
+      if (normalizedPriority) filters.push(`${normalizedPriority} priority`);
+      if (task_ids?.length) filters.push(`specific task${task_ids.length > 1 ? 's' : ''}`);
+
+      filterText = filters.length > 0 ? ` with ${filters.join(" and ")}` : "";
+      fromText = from.charAt(0).toUpperCase() + from.slice(1);
+      toText = to.charAt(0).toUpperCase() + to.slice(1);
 
       return updatedTodos;
     });
-    action.respond(`Moved ${movedCount} task${movedCount !== 1 ? 's' : ''}${filterText} from ${fromText} to ${toText}.`);
-  },
 
-    []);
+    // Enhanced response with fallbacks and suggestions
+    if (movedCount === 0) {
+      // Build helpful fallback response
+      let fallbackMessage = `❌ No tasks found to move from ${fromText} to ${toText}`;
+
+      if (category || normalizedPriority || task_ids) {
+        fallbackMessage += `${filterText}`;
+      }
+
+      fallbackMessage += ".\n\n";
+
+      // Provide helpful suggestions based on available data
+      const todosByStatus = {
+        todo: todos.filter(t => t.status === fromStatus),
+        total: todos.length
+      };
+
+      if (todosByStatus.todo.length === 0) {
+        fallbackMessage += `💡 There are no tasks in the ${fromText} board.`;
+      } else {
+        fallbackMessage += `💡 There ${todosByStatus.todo.length === 1 ? 'is' : 'are'} ${todosByStatus.todo.length} task${todosByStatus.todo.length !== 1 ? 's' : ''} in ${fromText}`;
+
+        if (category) {
+          const categoryTasks = todosByStatus.todo.filter(t => t.category?.toLowerCase() === category.toLowerCase());
+          if (categoryTasks.length === 0) {
+            const availableCategories = [...new Set(todosByStatus.todo.map(t => t.category).filter(Boolean))];
+            fallbackMessage += `, but none with "${category}" category.`;
+            if (availableCategories.length > 0) {
+              fallbackMessage += `\n   Available categories: ${availableCategories.join(", ")}`;
+            }
+          }
+        }
+
+        if (normalizedPriority) {
+          const priorityTasks = todosByStatus.todo.filter(t => t.priority === normalizedPriority);
+          if (priorityTasks.length === 0) {
+            const availablePriorities = [...new Set(todosByStatus.todo.map(t => t.priority))];
+            fallbackMessage += `, but none with ${normalizedPriority} priority.`;
+            fallbackMessage += `\n   Available priorities: ${availablePriorities.join(", ")}`;
+          }
+        }
+      }
+
+      // Suggest alternative move actions
+      const allAvailableCategories = [...new Set(todosByStatus.todo.map(t => t.category).filter(Boolean))];
+      fallbackMessage += "\n\n🔄 Try moving:\n";
+      fallbackMessage += `• 'move all tasks from ${fromText.toLowerCase()} to ${toText.toLowerCase()}' (remove filters)\n`;
+      if (allAvailableCategories.length > 0) {
+        fallbackMessage += `• 'move ${allAvailableCategories[0]} tasks from ${fromText.toLowerCase()} to ${toText.toLowerCase()}'\n`;
+      }
+      fallbackMessage += "• Use different source/destination boards\n";
+      fallbackMessage += "• Check spelling of category names and board names";
+
+      action.respond(fallbackMessage);
+      return;
+    }
+
+    // Success response with detailed information
+    let successMessage = `✅ Successfully moved ${movedCount} task${movedCount !== 1 ? 's' : ''}${filterText} from ${fromText} to ${toText}!`;
+
+    // Add context about remaining tasks
+    const remainingInSource = todos.filter(t => t.status === fromStatus).length - movedCount;
+    if (remainingInSource > 0) {
+      successMessage += `\n\n📊 ${remainingInSource} task${remainingInSource !== 1 ? 's' : ''} still remain in ${fromText}.`;
+    }
+
+    // Add efficiency note for large moves
+    if (movedCount > 5) {
+      successMessage += `\n⚡ Efficiently processed ${movedCount} tasks in batch.`;
+    }
+
+    action.respond(successMessage);
+  }, [todos]);
 
   const beastModeActionRef = useCallback((data: unknown, action: { respond: (message: string) => void }) => {
     changeTheme("forest");
     action.respond("🔥 Beast mode activated! 🔥");
-  }, [changeTheme]);
+  }, []);
 
   const deactivateBeastModeActionRef = useCallback((data: unknown, action: { respond: (message: string) => void }) => {
     changeTheme("light");
@@ -197,7 +320,7 @@ export function App({ view }: AppProps) {
     // Organize todos by board/status
     const todosByBoard = {
       todo: todos.filter(todo => todo.status === "todo"),
-      in_progress: todos.filter(todo => todo.status === "in_progress"),
+      ongoing: todos.filter(todo => todo.status === "ongoing"),
       done: todos.filter(todo => todo.status === "done")
     };
 
@@ -207,9 +330,9 @@ export function App({ view }: AppProps) {
         todosByBoard.todo.map((todo, index) =>
           `   ${index + 1}. ${todo.title}${todo.category ? ` [${todo.category}]` : ""}`
         ).join("\n") + "\n") +
-      `\n🔵 IN PROGRESS (${todosByBoard.in_progress.length} tasks):\n` +
-      (todosByBoard.in_progress.length === 0 ? "   No tasks in progress\n" :
-        todosByBoard.in_progress.map((todo, index) =>
+      `\n🔵 Ongoing (${todosByBoard.ongoing.length} tasks):\n` +
+      (todosByBoard.ongoing.length === 0 ? "   No tasks in progress\n" :
+        todosByBoard.ongoing.map((todo, index) =>
           `   ${index + 1}. ${todo.title}${todo.category ? ` [${todo.category}]` : ""}`
         ).join("\n") + "\n") +
       `\n🟢 DONE (${todosByBoard.done.length} tasks):\n` +
@@ -233,7 +356,7 @@ export function App({ view }: AppProps) {
       return;
     }
 
-    const { from, to, category, priority, tag, csv } = parsedArgs;
+    const { from, to, category, priority, csv } = parsedArgs;
 
     // Function to parse CSV data
     const parseCSV = (csvData: string): { category: string; priority: string; title: string }[] => {
@@ -294,7 +417,6 @@ export function App({ view }: AppProps) {
             createdAt: new Date(currentDate.getTime() + index), // Slightly different timestamps
             updatedAt: new Date(currentDate.getTime() + index),
             category: row.category || undefined,
-            tags: tag ? [tag] : undefined
           };
 
           tasks.push(newTask);
@@ -352,7 +474,6 @@ export function App({ view }: AppProps) {
         createdAt: currentDate,
         updatedAt: currentDate,
         category: category || undefined,
-        tags: tag ? [tag] : undefined
       };
       tasks.push(newTask);
     }
@@ -365,7 +486,7 @@ export function App({ view }: AppProps) {
     const filters = [];
     if (category) filters.push(`category "${category}"`);
     if (priority) filters.push(`${priority} priority`);
-    if (tag) filters.push(`tag "${tag}"`);
+
 
     const filterText = filters.length > 0 ? ` with ${filters.join(", ")}` : "";
     action.respond(`Successfully created ${taskCount} task${taskCount !== 1 ? 's' : ''}${filterText}.`);
