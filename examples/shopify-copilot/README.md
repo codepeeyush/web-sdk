@@ -1,3 +1,8 @@
+# Shopify Co-Pilot
+
+# YourGPT Shopify AI Actions Documentation
+
+
 ## Overview
 
 This documentation covers the integration of YourGPT AI Copilot with your Shopify store. It enables the Copilot to perform AI Actions in Shopify, allowing customers to search products, view details, add items to cart, and navigate the store using natural language commands.
@@ -15,7 +20,8 @@ This documentation covers the integration of YourGPT AI Copilot with your Shopif
 
 Set up your Shopify store through the Shopify admin panel.
 
-![Screenshot From 2025-07-31 18-24-36.png](attachment:2eabdefd-f55c-4efe-91a1-d7cf9c2e247b:Screenshot_From_2025-07-31_18-24-36.png)
+<img width="1920" height="1080" alt="Admin page shopify" src="https://github.com/user-attachments/assets/178ea39e-b96b-4a02-b903-f85338d99078" />
+
 
 ## Step 2: Access Theme Code Editor
 
@@ -24,7 +30,7 @@ Set up your Shopify store through the Shopify admin panel.
 3. Click the **3 dots** menu on your active theme
 4. Select **Edit code**
 
-![Screenshot From 2025-07-31 18-24-43.png](attachment:ac6d3e3d-6cd3-4bb5-9073-7d850f339c02:Screenshot_From_2025-07-31_18-24-43.png)
+<img width="1920" height="1080" alt="Edit code" src="https://github.com/user-attachments/assets/d445f37e-90d8-47d0-ba1f-3a26e472ba2a" />
 
 ## Step 3: Modify theme.liquid
 
@@ -64,7 +70,8 @@ window.YGC_WIDGET_ID = "YOUR_WIDGET_ID";
 - Converts product titles to URL-friendly slugs
 - Redirects user to search results page
     
-    ![Screenshot From 2025-07-31 16-25-47.png](attachment:c69dde94-f205-411a-b0f5-71829c7140e8:Screenshot_From_2025-07-31_16-25-47.png)
+  <img width="1920" height="1080" alt="Find products" src="https://github.com/user-attachments/assets/a07e53de-419c-463c-9781-5d0b0f26d3e4" />
+
     
 
 ```jsx
@@ -121,7 +128,8 @@ $yourgptChatbot.on("ai:action:find_product", async function (data, action) {
 - Redirects user to the "all products" collection page
 - Provides confirmation message
 
-![Screenshot From 2025-07-31 16-24-50.png](attachment:204eb249-06a5-4f25-a0b7-f3ff703228bb:Screenshot_From_2025-07-31_16-24-50.png)
+<img width="1920" height="1080" alt="Show all products" src="https://github.com/user-attachments/assets/d9ff8f04-9fa3-42cf-9fed-f23d8c51d231" />
+
 
 ```jsx
 $yourgptChatbot.on("ai:action:show_products", async function (data, action) {
@@ -140,8 +148,8 @@ $yourgptChatbot.on("ai:action:show_products", async function (data, action) {
 - Scans current page for product links
 - Matches user query with available product slugs
 - Redirects to the most similar product's detail page
+<img width="1920" height="1080" alt="View product" src="https://github.com/user-attachments/assets/6fb3fa89-4a10-49f2-bc28-e587bd034280" />
 
-![Screenshot From 2025-07-31 16-27-03.png](attachment:259c08ac-6f80-4bc1-a49e-c0a2e0af3dd9:Screenshot_From_2025-07-31_16-27-03.png)
 
 ```jsx
 $yourgptChatbot.on("ai:action:view_product", function (data, action) {
@@ -177,8 +185,8 @@ $yourgptChatbot.on("ai:action:view_product", function (data, action) {
 - Adds products to cart via form submission or API
 - Supports both simple and complex product variants
     
-    ![Screenshot From 2025-07-31 16-31-35.png](attachment:14d0fd8a-851a-4c2d-90fb-a0041e2065ac:Screenshot_From_2025-07-31_16-31-35.png)
-    
+ <img width="1920" height="1080" alt="Add to cart" src="https://github.com/user-attachments/assets/46fc3fcb-3f8f-4473-8939-f85bf296fd3d" />
+
 
 ```jsx
 $yourgptChatbot.on("ai:action:add_to_cart", async function (data, action) {
@@ -257,9 +265,8 @@ $yourgptChatbot.on("ai:action:add_to_cart", async function (data, action) {
 - Accepts minimum and maximum price parameters
 - Constructs filtered collection URL
 - Redirects to filtered product listing
-    
-    ![Screenshot From 2025-07-31 16-35-47.png](attachment:0ff7b990-2d36-49c1-9c35-aab7f0693b0b:Screenshot_From_2025-07-31_16-35-47.png)
-    
+<img width="1920" height="1080" alt="Filter products" src="https://github.com/user-attachments/assets/fe0dbd9a-9563-4bc9-a591-39a6cce45a6e" />
+
 
 ```jsx
 $yourgptChatbot.on("ai:action:product_with_filter", function (data, action) {
@@ -466,3 +473,19 @@ function setupChatbotAIActions() {
 - Check YourGPT widget configuration
 
 This integration provides a comprehensive e-commerce AI Copilot experience, enabling customers to browse, search, and purchase products through natural language interactions.
+
+## 📄 License
+MIT License - see LICENSE file for details.
+
+## 🆘 Support
+- 📧 Email: support@yourgpt.ai
+- 📖 Documentation: [Project Documentation](https://docs.yourgpt.ai)
+- 💬 Discord: [Join our community](https://discord.com/invite/z8PBs5ckcd)
+
+## 🔗 Links
+- Website: [YourGPT](https://yourgpt.ai/)
+- Documentation: [Project Documentation](https://docs.yourgpt.ai)
+
+---
+
+Made with ❤️ by YourGPT Team
