@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelLux - Your Premium Travel Booking Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane"></i>
+                <span>TravelLux</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" data-page="home" class="nav-link active">Home</a></li>
+                <li><a href="#" data-page="search" class="nav-link">Hotels</a></li>
+                <li><a href="#" class="nav-link">Flights</a></li>
+                <li><a href="#" class="nav-link">About</a></li>
+                <li><a href="#" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-login">Login</button>
+                <button class="nav-signup">Sign Up</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Homepage -->
+    <main id="homepage" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-background"></div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Discover Your Next Adventure</h1>
+                    <p>Book luxury hotels and unforgettable experiences worldwide with TravelLux</p>
+                </div>
+                
+                <!-- Search Widget -->
+                <div class="search-widget glass-card">
+                    <div class="search-tabs">
+                        <button class="search-tab active">Hotels</button>
+                        <button class="search-tab">Flights</button>
+                        <button class="search-tab">Cars</button>
+                    </div>
+                    <form class="search-form" id="mainSearchForm">
+                        <div class="search-fields">
+                            <div class="search-field">
+                                <label>Destination</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <input type="text" id="destination" placeholder="Where do you want to go?" autocomplete="off">
+                                    <div class="autocomplete-dropdown"></div>
+                                </div>
+                            </div>
+                            <div class="search-field">
+                                <label>Check-in</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <input type="date" id="checkin" required>
+                                </div>
+                            </div>
+                            <div class="search-field">
+                                <label>Check-out</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <input type="date" id="checkout" required>
+                                </div>
+                            </div>
+                            <div class="search-field">
+                                <label>Guests</label>
+                                <div class="input-with-icon guests-selector">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="guests" placeholder="2 Adults, 1 Room" readonly>
+                                    <div class="guests-dropdown">
+                                        <div class="guest-counter">
+                                            <span>Adults</span>
+                                            <div class="counter">
+                                                <button type="button" class="counter-btn" data-target="adults" data-action="decrease">-</button>
+                                                <span id="adults-count">2</span>
+                                                <button type="button" class="counter-btn" data-target="adults" data-action="increase">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="guest-counter">
+                                            <span>Children</span>
+                                            <div class="counter">
+                                                <button type="button" class="counter-btn" data-target="children" data-action="decrease">-</button>
+                                                <span id="children-count">0</span>
+                                                <button type="button" class="counter-btn" data-target="children" data-action="increase">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="guest-counter">
+                                            <span>Rooms</span>
+                                            <div class="counter">
+                                                <button type="button" class="counter-btn" data-target="rooms" data-action="decrease">-</button>
+                                                <span id="rooms-count">1</span>
+                                                <button type="button" class="counter-btn" data-target="rooms" data-action="increase">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                            Search Hotels
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Destinations -->
+        <section class="destinations">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Popular Destinations</h2>
+                    <p>Explore the world's most beautiful places</p>
+                </div>
+                <div class="destinations-grid" id="destinationsGrid"></div>
+            </div>
+        </section>
+
+        <!-- Featured Hotels -->
+        <section class="featured-hotels">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Featured Hotels</h2>
+                    <p>Handpicked luxury accommodations</p>
+                </div>
+                <div class="hotels-carousel" id="featuredHotels"></div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section class="why-choose-us">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Why Choose TravelLux</h2>
+                    <p>Experience the difference with our premium service</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Best Price Guarantee</h3>
+                        <p>We guarantee the lowest prices on all hotel bookings</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>24/7 Customer Support</h3>
+                        <p>Round-the-clock assistance for all your travel needs</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h3>Premium Selection</h3>
+                        <p>Carefully curated hotels and experiences worldwide</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h3>Free Cancellation</h3>
+                        <p>Flexible booking options with free cancellation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2>What Our Travelers Say</h2>
+                    <p>Real experiences from real people</p>
+                </div>
+                <div class="testimonials-carousel" id="testimonialsCarousel"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Search Results Page -->
+    <main id="searchpage" class="page">
+        <section class="search-results">
+            <div class="container">
+                <!-- Search Header -->
+                <div class="search-header">
+                    <div class="search-summary">
+                        <h2 id="searchTitle">Hotels in Paris</h2>
+                        <p id="searchSubtitle">245 hotels found • Check-in: Dec 15 • Check-out: Dec 20</p>
+                    </div>
+                    <div class="search-modify">
+                        <button class="btn--outline" id="modifySearch">Modify Search</button>
+                    </div>
+                </div>
+
+                <div class="search-layout">
+                    <!-- Filters Sidebar -->
+                    <aside class="filters-sidebar">
+                        <div class="filters-header">
+                            <h3>Filters</h3>
+                            <button class="clear-filters">Clear All</button>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>Price Range</h4>
+                            <div class="price-range">
+                                <input type="range" id="priceRange" min="50" max="1000" value="500">
+                                <div class="price-labels">
+                                    <span>$50</span>
+                                    <span id="maxPrice">$500</span>
+                                    <span>$1000+</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Star Rating</h4>
+                            <div class="rating-filters">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="5">
+                                    <span class="checkmark"></span>
+                                    <div class="stars">★★★★★</div>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="4">
+                                    <span class="checkmark"></span>
+                                    <div class="stars">★★★★☆</div>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="3">
+                                    <span class="checkmark"></span>
+                                    <div class="stars">★★★☆☆</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Property Type</h4>
+                            <div class="property-type-filters">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="hotel" data-filter="property">
+                                    <span class="checkmark"></span>
+                                    <span>Hotel</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="resort" data-filter="property">
+                                    <span class="checkmark"></span>
+                                    <span>Resort</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="villa" data-filter="property">
+                                    <span class="checkmark"></span>
+                                    <span>Villa</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Amenities</h4>
+                            <div class="amenity-filters" id="amenityFilters"></div>
+                        </div>
+                    </aside>
+
+                    <!-- Results Content -->
+                    <div class="results-content">
+                        <div class="results-header">
+                            <div class="results-count" id="resultsCount">245 hotels found</div>
+                            <div class="sort-options">
+                                <select id="sortSelect" class="form-control">
+                                    <option value="recommended">Recommended</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="rating">Guest Rating</option>
+                                    <option value="distance">Distance</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="hotel-results" id="hotelResults"></div>
+                        
+                        <div class="load-more">
+                            <button class="btn--outline" id="loadMoreHotels">Load More Hotels</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Hotel Details Page -->
+    <main id="hotelpage" class="page">
+        <section class="hotel-details">
+            <div class="container">
+                <div class="hotel-header">
+                    <button class="back-btn" id="backToSearch">
+                        <i class="fas fa-arrow-left"></i> Back to Results
+                    </button>
+                </div>
+
+                <div class="hotel-content" id="hotelContent">
+                    <!-- Hotel content will be dynamically loaded -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Checkout Page -->
+    <main id="checkoutpage" class="page">
+        <section class="checkout">
+            <div class="container">
+                <div class="checkout-header">
+                    <button class="back-btn" id="backToHotel">
+                        <i class="fas fa-arrow-left"></i> Back to Hotel
+                    </button>
+                    <div class="checkout-steps">
+                        <div class="step active">1. Guest Details</div>
+                        <div class="step">2. Payment</div>
+                        <div class="step">3. Confirmation</div>
+                    </div>
+                </div>
+
+                <div class="checkout-content">
+                    <div class="checkout-main">
+                        <div class="checkout-section">
+                            <h3>Guest Information</h3>
+                            <form class="guest-form" id="guestForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">First Name *</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Last Name *</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address *</label>
+                                        <input type="email" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number *</label>
+                                        <input type="tel" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Special Requests</label>
+                                    <textarea class="form-control" rows="3" placeholder="Any special requests or preferences?"></textarea>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="checkout-section">
+                            <h3>Payment Method</h3>
+                            <div class="payment-methods">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="card" checked>
+                                    <span class="payment-icon"><i class="fas fa-credit-card"></i></span>
+                                    <span>Credit/Debit Card</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="paypal">
+                                    <span class="payment-icon"><i class="fab fa-paypal"></i></span>
+                                    <span>PayPal</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="apple">
+                                    <span class="payment-icon"><i class="fab fa-apple-pay"></i></span>
+                                    <span>Apple Pay</span>
+                                </label>
+                            </div>
+
+                            <div class="card-form" id="cardForm">
+                                <div class="form-row">
+                                    <div class="form-group full-width">
+                                        <label class="form-label">Card Number *</label>
+                                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Expiry Date *</label>
+                                        <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">CVV *</label>
+                                        <input type="text" class="form-control" placeholder="123" maxlength="4">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Cardholder Name *</label>
+                                    <input type="text" class="form-control" placeholder="John Doe">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="booking-summary" id="bookingSummary">
+                        <!-- Booking summary will be populated dynamically -->
+                    </div>
+                </div>
+
+                <div class="checkout-actions">
+                    <button class="btn--primary btn--full-width" id="confirmBooking">
+                        Complete Booking
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div class="modal hidden" id="confirmationModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Booking Confirmed!</h3>
+                <button class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h4>Thank you for your booking!</h4>
+                <p>Confirmation details have been sent to your email.</p>
+                <div class="booking-reference">
+                    <strong>Booking Reference: <span id="bookingRef">TLX-2024-001234</span></strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn--primary" id="newSearch">Book Another Hotel</button>
+                <button class="btn--outline" id="closeConfirmation">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-plane"></i>
+                        <span>TravelLux</span>
+                    </div>
+                    <p>Your premium travel booking platform for unforgettable experiences worldwide.</p>
+                    <div class="social-links">
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#" target="_blank">About Us</a></li>
+                        <li><a href="#" target="_blank">Contact</a></li>
+                        <li><a href="#" target="_blank">Help Center</a></li>
+                        <li><a href="#" target="_blank">Privacy Policy</a></li>
+                        <li><a href="#" target="_blank">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Destinations</h4>
+                    <ul>
+                        <li><a href="#" target="_blank">Paris Hotels</a></li>
+                        <li><a href="#" target="_blank">Tokyo Hotels</a></li>
+                        <li><a href="#" target="_blank">New York Hotels</a></li>
+                        <li><a href="#" target="_blank">Bali Hotels</a></li>
+                        <li><a href="#" target="_blank">Dubai Hotels</a></li>
+                        <li><a href="#" target="_blank">Maldives Hotels</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                        <p><i class="fas fa-envelope"></i> support@travellux.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Travel Street, City, State 12345</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TravelLux. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
