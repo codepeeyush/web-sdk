@@ -190,7 +190,6 @@ $yourgptChatbot.on("ai:action:view_hotel", function (data, action) {
 ```
 
 ## 3. Select Room Action
-<img width="1920" height="1080" alt="Select Room" src="https://github.com/user-attachments/assets/9c0994f4-6787-4e5b-a894-138fb2c0315c" />
 
 **Action ID**: `ai:action:select_room`
 
@@ -201,6 +200,7 @@ $yourgptChatbot.on("ai:action:view_hotel", function (data, action) {
 - "Select room number 2"
 - "Choose the deluxe suite"
 - "I want the second room option"
+<img width="1920" height="1080" alt="Select Room" src="https://github.com/user-attachments/assets/9c0994f4-6787-4e5b-a894-138fb2c0315c" />
 
 **Parameters**:
 
