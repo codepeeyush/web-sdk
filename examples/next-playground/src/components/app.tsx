@@ -6,7 +6,7 @@ import { Todo } from "@/types/todo";
 import { Navigation } from "@/components/navigation";
 import { TodoList } from "@/components/todo-app";
 import { KanbanBoard } from "@/components/kanban-board";
-import { YourGPT, useAIActions } from "@yourgpt/widget-web-sdk/react";
+import { YourGPTWidget, useAIActions } from "@yourgpt/widget-web-sdk/react";
 
 interface AppProps {
   view: "list" | "kanban";
@@ -36,13 +36,6 @@ export function App({ view }: AppProps) {
   }, []);
 
   useEffect(() => {
-    // Initialize SDK client-side only
-    YourGPT.init({
-      widgetId: process.env.NEXT_PUBLIC_WIDGET_UID!,
-      endpoint: process.env.NEXT_PUBLIC_WIDGET_ENDPOINT!,
-      debug: true,
-    });
-
     // Register location action
     registerAction("get_location", async (data, helpers) => {
       const confirmed = await helpers.confirm({
@@ -148,6 +141,10 @@ export function App({ view }: AppProps) {
   return (
     <div className="min-h-screen bg-background">
       <Navigation currentView={currentView} />
+
+      <div className="h-[800px] w-[400px]" suppressHydrationWarning>
+        <YourGPTWidget />
+      </div>
 
       <main className="container mx-auto px-0 py-8">
         <motion.div key={currentView} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>

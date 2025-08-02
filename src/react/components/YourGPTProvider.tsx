@@ -21,7 +21,6 @@ interface YourGPTContextValue {
   isLoading: boolean;
   error: YourGPTError | null;
   state: WidgetState;
-  mode: "floating" | "embedded";
 }
 
 const YourGPTContext = createContext<YourGPTContextValue | null>(null);
@@ -31,13 +30,13 @@ interface YourGPTProviderProps {
   config: YourGPTConfig;
   onError?: (error: YourGPTError) => void;
   onInitialized?: (sdk: YourGPTSDK) => void;
-  mode: "floating" | "embedded";
 }
 
 /**
  * Provider component for YourGPT SDK
  */
-export function YourGPTProvider({ children, config, onError, onInitialized, mode }: YourGPTProviderProps) {
+export function YourGPTProvider({ children, config, onError, onInitialized }: YourGPTProviderProps) {
+  const [isBrowser, setIsBrowser] = useState(false);
   const [sdk, setSdk] = useState<YourGPTSDK | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,15 +50,20 @@ export function YourGPTProvider({ children, config, onError, onInitialized, mode
     connectionRetries: 0,
   });
 
+  // Set browser state
   useEffect(() => {
+    setIsBrowser(true);
+  }, []);
+
+  useEffect(() => {
+    // Don't initialize during SSR
+    if (!isBrowser) return;
+
     const initializeSDK = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        // Set mode before initialization
-        window.YGC_MODE = mode || "floating";
-
         const sdkInstance = await YourGPT.init(config);
 
         // Listen for state changes
@@ -99,7 +103,7 @@ export function YourGPTProvider({ children, config, onError, onInitialized, mode
         }
       }
     };
-  }, [config, onError, onInitialized]);
+  }, [config, onError, onInitialized, isBrowser]);
 
   const value: YourGPTContextValue = {
     sdk,
@@ -107,7 +111,6 @@ export function YourGPTProvider({ children, config, onError, onInitialized, mode
     isLoading,
     error,
     state,
-    mode,
   };
 
   return <YourGPTContext.Provider value={value}>{children}</YourGPTContext.Provider>;

@@ -141,5 +141,6 @@ declare global {
       WIDGET_ENDPOINT?: string;
     };
     YOURGPT_WIDGET_UID?: string;
+    YGC_MODE: "floating" | "embedded";
   }
 }

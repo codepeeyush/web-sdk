@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useYourGPT } from "./YourGPTProvider";
 
 interface YourGPTWidgetProps {
@@ -8,17 +8,28 @@ interface YourGPTWidgetProps {
 
 export function YourGPTWidget({ className, style }: YourGPTWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { mode, isInitialized } = useYourGPT();
+  const { isInitialized } = useYourGPT();
+  const [isBrowser, setIsBrowser] = useState(false);
+  const mode = typeof window !== "undefined" ? window.YGC_MODE : "floating";
+
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
 
   // Handle embedded mode container
   useEffect(() => {
-    if (!containerRef.current || !isInitialized || mode !== "embedded") return;
+    if (!containerRef.current || mode !== "embedded") return;
 
     // For embedded mode, let widget render in our container
-    if (window.YGC_MODE === "embedded") {
+    if (mode === "embedded") {
       window.YGC_WIDGET?.renderEmbedded(containerRef.current);
     }
-  }, [isInitialized, mode]);
+  }, [isInitialized]);
+
+  // Don't render anything during SSR
+  if (!isBrowser) {
+    return null;
+  }
 
   // Only render container for embedded mode
   if (mode === "embedded") {

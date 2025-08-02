@@ -9,6 +9,7 @@ export interface YourGPTConfig {
   autoLoad?: boolean;
   debug?: boolean;
   whitelabel?: boolean;
+  mode?: "floating" | "embedded";
 }
 
 // Widget State

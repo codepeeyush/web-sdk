@@ -1,20 +1,20 @@
 /**
  * YourGPT React SDK
- * 
+ *
  * React-specific hooks and components for YourGPT integration
  */
 
 // Hooks
-export { useYourGPT } from './hooks/useYourGPT';
-export { useYourGPTChatbot } from './hooks/useYourGPTChatbot';
-export { useAIActions } from './hooks/useAIActions';
+export { useYourGPT } from "./hooks/useYourGPT";
+export { useYourGPTChatbot } from "./hooks/useYourGPTChatbot";
+export { useAIActions } from "./hooks/useAIActions";
 
 // Components
-export { YourGPTProvider, useYourGPTContext } from './components/YourGPTProvider';
-export { YourGPTWidget } from './components/YourGPTWidget';
+export { YourGPTProvider } from "./components/YourGPTProvider";
+export { YourGPTWidget } from "./components/YourGPTWidget";
 
 // Re-export core SDK for convenience
-export { default as YourGPT, YourGPTSDK } from '../core/YourGPT';
+export { default as YourGPT, YourGPTSDK } from "../core/YourGPT";
 
 // Re-export types
 export type {
@@ -38,11 +38,11 @@ export type {
   MessagingControls,
   AdvancedFeatures,
   DataManagement,
-  EventListeners
-} from '../types';
+  EventListeners,
+} from "../types";
 
 // Re-export error class
-export { YourGPTError } from '../types';
+export { YourGPTError } from "../types";
 
 // Version
-export const VERSION = '1.0.0';
+export const VERSION = "1.0.0";
