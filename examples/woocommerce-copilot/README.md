@@ -6,10 +6,10 @@ Before integrating the YourGPT chatbot, ensure you have a local WordPress and Wo
 
 ### ⚡ Quick Implementation
 
-Simply add this PHP function to your theme's `functions.php` or custom plugin to inject the required JavaScript into your site's footer. This establishes all the necessary connections for product search, cart management, and checkout automation.
+Simply upload and activate the provided plugin ZIP file through your WordPress admin dashboard. This plugin injects the required JavaScript into your site’s footer and sets up all necessary connections for product search, cart management, and checkout automation seamlessly.
 
 
-## Features
+## ✨ Features
 
 - **Product Search**: Customers can find products using natural language queries
 - **Product Filtering**: Filter products by price range and other attributes
@@ -19,7 +19,7 @@ Simply add this PHP function to your theme's `functions.php` or custom plugin to
 - **Variant Selection**: Choose product variants through conversation
 - **Quantity Management**: Specify product quantities when adding to cart
 
-## Installation
+## 🔌 Installation
 
 1. Download the plugin zip file
 2. Go to your WordPress admin dashboard
@@ -28,15 +28,15 @@ Simply add this PHP function to your theme's `functions.php` or custom plugin to
 5. Click "Install Now" and then "Activate Plugin"
 6. Ensure WooCommerce is installed and activated
 
-## Configuration
+## 🔧 Configuration
 
-The plugin comes pre-configured with a default YourGPT widget ID. To customize or use your own YourGPT chatbot:
+The plugin doesn’t include a default YourGPT widget ID. To use your own YourGPT chatbot:
 
 1. Sign up at [YourGPT.ai](https://yourgpt.ai/)
 2. Create and configure your chatbot
 3. Replace the `YGC_WIDGET_ID` in the plugin code with your own widget ID
 
-## Usage
+## 🚀  Usage
 
 Once installed and activated, the YourGPT chatbot widget will automatically appear on your WooCommerce store. Customers can interact with it using natural language commands such as:
 
@@ -47,6 +47,11 @@ Once installed and activated, the YourGPT chatbot widget will automatically appe
 - "Proceed to checkout"
 - "Show my previous orders"
 - "Repeat my last order"
+
+
+## 🤖 Core AI Actions
+
+Here are the specific AI actions the script is configured to handle:
 
 ### 🔄 Dynamic URL Handling
 
@@ -63,45 +68,6 @@ const WOOCOMMERCE_URLS = {
 };
 ```
 
-### 🔌 Installation
-
-Add this PHP function to your theme's `functions.php` file or a custom plugin:
-
-```jsx
-function add_yourgpt_chatbot_script() {
-?>
-<script>
-window.YGC_WIDGET_ID = "YOUR_WIDGET_ID";
-(function() {
-    var script = document.createElement('script');
-    script.src = "https://widget.yourgpt.ai/script.js";
-    script.id = 'yourgpt-chatbot';
-    document.body.appendChild(script);
-    
-    script.onload = function() {
-        if (window.$yourgptChatbot) {
-            $yourgptChatbot.on("ai:action:show_all_products", async (data, action) => {
-                // Starts handling the 'show all products' action...
-                // Implementation goes here...
-            });
-            
-            $yourgptChatbot.on("ai:action:view_cart", (data, action) => {
-                // Starts handling the 'view cart' action...
-                // Implementation goes here...
-            });
-        }
-    };
-})();
-</script>
-<?php
-}
-add_action('wp_footer', 'add_yourgpt_chatbot_script');
-```
-
-## Core AI Actions
-
-Here are the specific AI actions the script is configured to handle:
-
 ### 1. 🏪 Show All Products
 
 - **Action:** **`ai:action:show_all_products`**
@@ -117,7 +83,8 @@ $yourgptChatbot.on("ai:action:show_all_products", (data, action) => {
 });
 ```
 
-![Screenshot From 2025-07-31 16-10-36.png](assets/Screenshot_From_2025-07-31_16-10-36.png)
+<img width="1538" height="863" alt="Screenshot_From_2025-07-31_16-10-36" src="https://github.com/user-attachments/assets/c05debc3-415b-4591-ba03-353340ee03d5" />
+
 
 ### 2. 🔍 Find/Search for a Product
 
@@ -127,7 +94,6 @@ $yourgptChatbot.on("ai:action:show_all_products", (data, action) => {
 > *Important: For the `ai:action:find_item` action, provide the search term as a parameter in the function arguments. In our example, it’s shown as `searchedItem`*
 > 
 
-![Screenshot From 2025-07-31 17-14-09.png](assets/Screenshot_From_2025-07-31_17-14-09.png)
 
 ```jsx
 $yourgptChatbot.on("ai:action:find_item", async (data, action) => {
@@ -141,7 +107,10 @@ $yourgptChatbot.on("ai:action:find_item", async (data, action) => {
 });
 ```
 
-![Screenshot From 2025-07-31 13-34-17.png](assets/Screenshot_From_2025-07-31_13-34-17.png)
+<img width="1394" height="955" alt="Screenshot_From_2025-07-31_17-14-09" src="https://github.com/user-attachments/assets/cecce851-db2e-472d-899f-f11262362fcb" />
+
+<img width="1522" height="815" alt="Screenshot_From_2025-07-31_13-34-17" src="https://github.com/user-attachments/assets/ff5d529b-d24c-471c-a51f-f0236c754438" />
+
 
 ### 3. 💰 Filter Products by Price
 
@@ -164,14 +133,15 @@ $yourgptChatbot.on("ai:action:filter_items", async (data, action) => {
 });
 ```
 
-![Screenshot From 2025-07-31 15-08-21.png](assets/Screenshot_From_2025-07-31_15-08-21.png)
+
+<img width="1555" height="857" alt="Screenshot_From_2025-07-31_15-08-21" src="https://github.com/user-attachments/assets/23530fcb-d032-48fb-a82d-b7061f1c4dde" />
 
 ### 4. 👁️ View a Specific Product
 
 - **Action:** **`ai:action:view_product`**
 - **Summary:** From a listing page, this action finds the most similar product matching the user's request and navigates directly to that product's detail page.
 
-> *Important: For the `ai:action:find_item` action, provide the search term as a parameter in the function arguments. In our example, it’s shown as `s`*
+> *Important: For the `ai:action:view_product` action, provide the search term as a parameter in the function arguments. In our example, it’s shown as `s`*
 > 
 
 ```jsx
@@ -342,7 +312,8 @@ $yourgptChatbot.on("ai:action:add_to_cart", async (data, action) => {
     ```
     
 
-![Screenshot From 2025-07-31 15-19-43.png](assets/Screenshot_From_2025-07-31_15-19-43.png)
+<img width="1766" height="878" alt="Screenshot_From_2025-07-31_15-19-43" src="https://github.com/user-attachments/assets/e0ce92d9-0b1c-4940-b85d-f047d3bf52fe" />
+
 
 ### 6. 🛍️ View Cart
 
@@ -356,7 +327,7 @@ $yourgptChatbot.on("ai:action:view_cart", (data, action) => {
 });
 ```
 
-![Screenshot From 2025-07-31 15-31-10.png](assets/Screenshot_From_2025-07-31_15-31-10.png)
+<img width="1515" height="801" alt="Screenshot_From_2025-07-31_15-31-10" src="https://github.com/user-attachments/assets/052632be-f3df-4bfe-843c-f22db0107a53" />
 
 ### 7. 💳 Proceed to Checkout
 
@@ -373,7 +344,8 @@ $yourgptChatbot.on("ai:action:checkout_cart", (data, action) => {
 });
 ```
 
-![Screenshot From 2025-07-31 15-35-54.png](assets/Screenshot_From_2025-07-31_15-35-54.png)
+<img width="1466" height="821" alt="Screenshot_From_2025-07-31_15-35-54" src="https://github.com/user-attachments/assets/d574f022-731d-4593-af1a-8f3cf8e35715" />
+
 
 ### 8. 📋 View Orders
 
@@ -430,14 +402,11 @@ $yourgptChatbot.on("ai:action:repeat_order", async (data, action) => {
 MIT License - see LICENSE file for details.
 
 ## 🆘 Support
-- 📧 Email: support@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/yourgpt/woocommerce-ai-action/issues)
-- 📖 Documentation: [Project Wiki](https://github.com/yourgpt/woocommerce-ai-action/wiki)
-- 💬 Discord: [Join our community](https://discord.gg/yourgpt)
+- 📧 Email: support@yourgpt.ai
+- 💬 Discord: [Join our community](https://discord.com/invite/z8PBs5ckcd)
 
 ## 🔗 Links
-- Website: [Copilot Todo List](https://yourgpt.ai/chatbot)
-- GitHub: [copilot-todo-list](https://github.com/yourgpt/woocommerce-ai-action)
+- Website: [YourGPT](https://yourgpt.ai/)
 - Documentation: [Project Documentation](https://docs.yourgpt.ai)
 
 ---

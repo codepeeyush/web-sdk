@@ -67,8 +67,7 @@ Ensure your website includes these CSS classes and IDs:
 ```
 
 ## Set-Up Parameters:
-
-![Screenshot From 2025-07-31 17-09-03.png](Travel%20Co-Pilot%20241eee2ccef2800f9d48ee4495ddd749/Screenshot_From_2025-07-31_17-09-03.png)
+<img width="1419" height="949" alt="Parameters" src="https://github.com/user-attachments/assets/e2d69201-2884-4861-b736-78e311a7a364" />
 
 ## ❇️AI Actions Reference
 
@@ -83,6 +82,7 @@ Ensure your website includes these CSS classes and IDs:
 - "Find hotels in Paris for March 15-17"
 - "Search accommodation in New York for 2 adults"
 - "Look for hotels near Times Square, 1 room, 3 nights"
+<img width="1920" height="1080" alt="Search Hotel" src="https://github.com/user-attachments/assets/e605c787-6eb5-4cf9-801d-055bcbec3ceb" />
 
 **Parameters**:
 
@@ -144,8 +144,6 @@ $yourgptChatbot.on("ai:action:search_hotels", function (data, action) {
 });
 ```
 
-![Screenshot From 2025-07-31 16-16-01.png](Travel%20Co-Pilot%20241eee2ccef2800f9d48ee4495ddd749/Screenshot_From_2025-07-31_16-16-01.png)
-
 ## 2. View Hotel Details Action
 
 **Action ID**: `ai:action:view_hotel`
@@ -157,6 +155,7 @@ $yourgptChatbot.on("ai:action:search_hotels", function (data, action) {
 - "Show me details for hotel ID 12345"
 - "View more info about the Marriott"
 - "Tell me about the first hotel"
+<img width="1920" height="1080" alt="View Hotel" src="https://github.com/user-attachments/assets/5bd16be9-dc40-4856-aeb1-59b3544556f1" />
 
 **Parameters**:
 
@@ -190,8 +189,6 @@ $yourgptChatbot.on("ai:action:view_hotel", function (data, action) {
 });
 ```
 
-![Screenshot From 2025-07-31 16-17-53.png](Travel%20Co-Pilot%20241eee2ccef2800f9d48ee4495ddd749/Screenshot_From_2025-07-31_16-17-53.png)
-
 ## 3. Select Room Action
 
 **Action ID**: `ai:action:select_room`
@@ -203,6 +200,7 @@ $yourgptChatbot.on("ai:action:view_hotel", function (data, action) {
 - "Select room number 2"
 - "Choose the deluxe suite"
 - "I want the second room option"
+<img width="1920" height="1080" alt="Select Room" src="https://github.com/user-attachments/assets/9c0994f4-6787-4e5b-a894-138fb2c0315c" />
 
 **Parameters**:
 
@@ -235,8 +233,6 @@ $yourgptChatbot.on("ai:action:select_room", function (data, action) {
 });
 ```
 
-![Screenshot From 2025-07-31 16-16-34.png](Travel%20Co-Pilot%20241eee2ccef2800f9d48ee4495ddd749/Screenshot_From_2025-07-31_16-16-34.png)
-
 ## 4. Complete Booking Action
 
 **Action ID**: `ai:action:complete_booking`
@@ -248,6 +244,7 @@ $yourgptChatbot.on("ai:action:select_room", function (data, action) {
 - "Book the room for John Doe, email [john@email.com](mailto:john@email.com)"
 - "Complete booking with my card ending in 1234"
 - "Finalize reservation for 2 guests"
+<img width="1920" height="1080" alt="Payment Page" src="https://github.com/user-attachments/assets/00761a06-61e9-44e2-b45c-328aba38f605" />
 
 **Parameters**:
 
@@ -310,7 +307,6 @@ $yourgptChatbot.on("ai:action:complete_booking", function (data, action) {
 });
 ```
 
-![Screenshot From 2025-07-31 16-16-48.png](Travel%20Co-Pilot%20241eee2ccef2800f9d48ee4495ddd749/Screenshot_From_2025-07-31_16-16-48.png)
 
 ## ▶️Conversation Flow Examples
 
@@ -340,7 +336,8 @@ $yourgptChatbot.on("ai:action:complete_booking", function (data, action) {
 
 → **Response**: "Booking completed successfully"
 
-![Screenshot From 2025-07-31 16-20-55.png](Travel%20Co-Pilot%20241eee2ccef2800f9d48ee4495ddd749/Screenshot_From_2025-07-31_16-20-55.png)
+
+<img width="1920" height="1080" alt="Booked" src="https://github.com/user-attachments/assets/9e96740a-ad74-4303-920f-e4863d89025f" />
 
 ## Customization
 
@@ -568,3 +565,19 @@ function autofillCheckoutFormAndSubmit(data) {
     }
 }
 ```
+
+## 📄 License
+MIT License - see LICENSE file for details.
+
+## 🆘 Support
+- 📧 Email: support@yourgpt.ai
+- 📖 Documentation: [Project Documentation](https://docs.yourgpt.ai)
+- 💬 Discord: [Join our community](https://discord.com/invite/z8PBs5ckcd)
+
+## 🔗 Links
+- Website: [YourGPT](https://yourgpt.ai/)
+- Documentation: [Project Documentation](https://docs.yourgpt.ai)
+
+---
+
+Made with ❤️ by YourGPT Team
