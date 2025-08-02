@@ -2,9 +2,18 @@
  * React Provider for YourGPT SDK
  */
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import YourGPT, { YourGPTSDK } from '../../core/YourGPT';
-import { YourGPTConfig, YourGPTError, WidgetState } from '../../types';
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import YourGPT, { YourGPTSDK } from "../../core/YourGPT";
+import { YourGPTConfig, YourGPTError, WidgetState } from "../../types";
+
+declare global {
+  interface Window {
+    YGC_MODE: "floating" | "embedded";
+    YGC_WIDGET?: {
+      renderEmbedded: (container: HTMLElement) => void;
+    };
+  }
+}
 
 interface YourGPTContextValue {
   sdk: YourGPTSDK | null;
@@ -12,6 +21,7 @@ interface YourGPTContextValue {
   isLoading: boolean;
   error: YourGPTError | null;
   state: WidgetState;
+  mode: "floating" | "embedded";
 }
 
 const YourGPTContext = createContext<YourGPTContextValue | null>(null);
@@ -21,17 +31,13 @@ interface YourGPTProviderProps {
   config: YourGPTConfig;
   onError?: (error: YourGPTError) => void;
   onInitialized?: (sdk: YourGPTSDK) => void;
+  mode: "floating" | "embedded";
 }
 
 /**
  * Provider component for YourGPT SDK
  */
-export function YourGPTProvider({ 
-  children, 
-  config, 
-  onError, 
-  onInitialized 
-}: YourGPTProviderProps) {
+export function YourGPTProvider({ children, config, onError, onInitialized, mode }: YourGPTProviderProps) {
   const [sdk, setSdk] = useState<YourGPTSDK | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +48,7 @@ export function YourGPTProvider({
     isConnected: false,
     isLoaded: false,
     messageCount: 0,
-    connectionRetries: 0
+    connectionRetries: 0,
   });
 
   useEffect(() => {
@@ -51,10 +57,13 @@ export function YourGPTProvider({
       setError(null);
 
       try {
+        // Set mode before initialization
+        window.YGC_MODE = mode || "floating";
+
         const sdkInstance = await YourGPT.init(config);
-        
+
         // Listen for state changes
-        const unsubscribe = sdkInstance.on('stateChange', (newState: WidgetState) => {
+        const unsubscribe = sdkInstance.on("stateChange", (newState: WidgetState) => {
           setState(newState);
         });
 
@@ -68,11 +77,10 @@ export function YourGPTProvider({
         if (onInitialized) {
           onInitialized(sdkInstance);
         }
-
       } catch (err) {
         const sdkError = err instanceof YourGPTError ? err : new YourGPTError(String(err));
         setError(sdkError);
-        
+
         if (onError) {
           onError(sdkError);
         }
@@ -98,25 +106,22 @@ export function YourGPTProvider({
     isInitialized,
     isLoading,
     error,
-    state
+    state,
+    mode,
   };
 
-  return (
-    <YourGPTContext.Provider value={value}>
-      {children}
-    </YourGPTContext.Provider>
-  );
+  return <YourGPTContext.Provider value={value}>{children}</YourGPTContext.Provider>;
 }
 
 /**
  * Hook to use YourGPT context
  */
-export function useYourGPTContext(): YourGPTContextValue {
+export function useYourGPT(): YourGPTContextValue {
   const context = useContext(YourGPTContext);
-  
+
   if (!context) {
-    throw new YourGPTError('useYourGPTContext must be used within a YourGPTProvider');
+    throw new YourGPTError("useYourGPT must be used within a YourGPTProvider");
   }
-  
+
   return context;
 }
