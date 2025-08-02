@@ -1,91 +1,65 @@
-/**
- * React Component for YourGPT Widget
- */
-
-import { useEffect, useRef } from 'react';
-import YourGPT from '../../core/YourGPT';
-import { YourGPTConfig, YourGPTError } from '../../types';
+import { useEffect, useRef, useState } from "react";
+import { useYourGPT } from "./YourGPTProvider";
 
 interface YourGPTWidgetProps {
-  config: YourGPTConfig;
-  onError?: (error: YourGPTError) => void;
-  onInitialized?: () => void;
-  onMessageReceived?: (data: any) => void;
-  onEscalatedToHuman?: (data: any) => void;
-  onWidgetPopup?: (isOpen: boolean) => void;
   className?: string;
   style?: React.CSSProperties;
+  /** Optional callback when widget is mounted */
+  onMount?: () => void;
+  /** Optional callback when widget is unmounted */
+  onUnmount?: () => void;
 }
 
-/**
- * Widget component that handles initialization and basic event handling
- */
-export function YourGPTWidget({
-  config,
-  onError,
-  onInitialized,
-  onMessageReceived,
-  onEscalatedToHuman,
-  onWidgetPopup,
-  className,
-  style
-}: YourGPTWidgetProps) {
-  const initializedRef = useRef(false);
-  const unsubscribersRef = useRef<Array<() => void>>([]);
+export function YourGPTWidget({ className, style, onMount, onUnmount }: YourGPTWidgetProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { isInitialized } = useYourGPT();
+  const [isBrowser, setIsBrowser] = useState(false);
+  const mode = typeof window !== "undefined" ? window.YGC_MODE : "floating";
 
   useEffect(() => {
-    if (initializedRef.current) return;
+    setIsBrowser(true);
+  }, []);
 
-    const initializeWidget = async () => {
-      try {
-        const sdk = await YourGPT.init(config);
-        
-        // Set up event listeners
-        const unsubscribers: Array<() => void> = [];
+  // Handle embedded mode container
+  useEffect(() => {
+    if (!isInitialized || !isBrowser) return undefined;
 
-        if (onInitialized) {
-          unsubscribers.push(sdk.onInit(onInitialized));
-        }
+    // Handle widget rendering and cleanup
+    const container = containerRef.current;
+    if (!container || mode !== "embedded") return undefined;
 
-        if (onMessageReceived) {
-          unsubscribers.push(sdk.onMessageReceived(onMessageReceived));
-        }
-
-        if (onEscalatedToHuman) {
-          unsubscribers.push(sdk.onEscalatedToHuman(onEscalatedToHuman));
-        }
-
-        if (onWidgetPopup) {
-          unsubscribers.push(sdk.onWidgetPopup(onWidgetPopup));
-        }
-
-        unsubscribersRef.current = unsubscribers;
-        initializedRef.current = true;
-
-      } catch (err) {
-        const error = err instanceof YourGPTError ? err : new YourGPTError(String(err));
-        if (onError) {
-          onError(error);
-        }
-      }
-    };
-
-    initializeWidget();
+    window.YGC_WIDGET?.renderEmbedded(container);
+    onMount?.();
 
     return () => {
-      // Cleanup event listeners
-      unsubscribersRef.current.forEach(unsubscribe => unsubscribe());
-      unsubscribersRef.current = [];
+      // @ts-ignore
+      window.YGC_WIDGET?.cleanup?.();
+      onUnmount?.();
     };
-  }, [config, onError, onInitialized, onMessageReceived, onEscalatedToHuman, onWidgetPopup]);
+  }, [isInitialized, isBrowser, mode]);
 
-  // This component doesn't render anything visible
-  // The widget is rendered by the YourGPT system in the root container
-  return (
-    <div 
-      className={className}
-      style={{ display: 'none', ...style }}
-      data-yourgpt-widget="true"
-    />
-  );
+  // Don't render anything during SSR
+  if (!isBrowser) {
+    return null;
+  }
+
+  // Only render container for embedded mode
+  if (mode === "embedded") {
+    return (
+      <div
+        ref={containerRef}
+        id={`yourgpt-container-${Math.random()}`}
+        className={className}
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          ...style,
+        }}
+      />
+    );
+  }
+
+  // Nothing to render for floating mode
+  return null;
 }

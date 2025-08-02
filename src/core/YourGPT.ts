@@ -53,6 +53,8 @@ class YourGPTSDK extends EventEmitter<YourGPTEvents> {
    * Initialize the SDK
    */
   public async init(config: YourGPTConfig): Promise<YourGPTSDK> {
+    window.YGC_MODE = config.mode || "floating";
+
     if (this.isInitialized) {
       this.logger.warn("SDK already initialized");
       return this;
