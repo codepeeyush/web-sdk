@@ -4,9 +4,13 @@ import { useYourGPT } from "./YourGPTProvider";
 interface YourGPTWidgetProps {
   className?: string;
   style?: React.CSSProperties;
+  /** Optional callback when widget is mounted */
+  onMount?: () => void;
+  /** Optional callback when widget is unmounted */
+  onUnmount?: () => void;
 }
 
-export function YourGPTWidget({ className, style }: YourGPTWidgetProps) {
+export function YourGPTWidget({ className, style, onMount, onUnmount }: YourGPTWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { isInitialized } = useYourGPT();
   const [isBrowser, setIsBrowser] = useState(false);
@@ -18,13 +22,21 @@ export function YourGPTWidget({ className, style }: YourGPTWidgetProps) {
 
   // Handle embedded mode container
   useEffect(() => {
-    if (!containerRef.current || mode !== "embedded") return;
+    if (!isInitialized || !isBrowser) return undefined;
 
-    // For embedded mode, let widget render in our container
-    if (mode === "embedded") {
-      window.YGC_WIDGET?.renderEmbedded(containerRef.current);
-    }
-  }, [isInitialized]);
+    // Handle widget rendering and cleanup
+    const container = containerRef.current;
+    if (!container || mode !== "embedded") return undefined;
+
+    window.YGC_WIDGET?.renderEmbedded(container);
+    onMount?.();
+
+    return () => {
+      // @ts-ignore
+      window.YGC_WIDGET?.cleanup?.();
+      onUnmount?.();
+    };
+  }, [isInitialized, isBrowser, mode]);
 
   // Don't render anything during SSR
   if (!isBrowser) {
