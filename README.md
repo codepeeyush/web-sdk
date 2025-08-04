@@ -258,8 +258,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
   return (
     <YourGPTProvider
       config={{
-        widgetId: process.env.NEXT_PUBLIC_WIDGET_UID!,
-        endpoint: process.env.NEXT_PUBLIC_WIDGET_ENDPOINT!,
+        widgetId: 'your-widget-id',
         mode: "embedded",
       }}
       onError={(error) => {
@@ -332,7 +331,7 @@ Here is the setup guide for YourGPT dashboard.
 
 Create custom AI actions in YourGPT dashboard
 
-https://github.com/user-attachments/assets/ff983420-fa9c-43a2-9fed-534a2e208712
+https://github.com/user-attachments/assets/733e6cee-6124-46f1-8f85-4f616b9cc945
 
 ### Choose your best suited model for your application
 
