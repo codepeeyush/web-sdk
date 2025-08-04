@@ -1,6 +1,6 @@
 # YourGPT SDK
 
-[![npm version](https://badge.fury.io/js/@yourgpt/widget-web-sdk.svg)](https://badge.fury.io/js/@yourgpt/widget-web-sdk)
+![NPM Version](https://img.shields.io/npm/v/%40yourgpt%2Fwidget-web-sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/Build-Passing-green.svg)]()
@@ -93,18 +93,6 @@ function ChatButton() {
 
 ## 📖 Complete Documentation
 
-### 🔧 Configuration
-
-```typescript
-interface YourGPTConfig {
-  widgetId: string; // Required: Your YourGPT widget ID
-  endpoint?: string; // Optional: Custom endpoint URL
-  autoLoad?: boolean; // Optional: Auto-load widget (default: true)
-  debug?: boolean; // Optional: Enable debug logging
-  whitelabel?: boolean; // Optional: Use whitelabel endpoint
-}
-```
-
 ### 🎮 Widget Controls
 
 ```typescript
@@ -129,7 +117,6 @@ sdk.startGame("quizMania", {
   gameConfig: { difficulty: "medium" },
 });
 ```
-
 
 ### 🤖 AI Actions System
 
@@ -271,7 +258,6 @@ export function Provider({ children }: { children: React.ReactNode }) {
 }
 ```
 
-
 ### Custom Confirmation Dialogs
 
 ```typescript
@@ -400,16 +386,12 @@ dist/
 
 ## 📋 API Reference
 
-### Core SDK Classes
+### Core SDK Class
 
 - **`YourGPTSDK`**: Main SDK class
-- **`YourGPT`**: Static methods for easy access
-- **`YourGPTError`**: Custom error handling
 
-### React Hooks
+### React Hook
 
-- **`useYourGPT()`**: Low-level SDK access
-- **`useYourGPTChatbot()`**: Main widget control hook
 - **`useAIActions()`**: AI actions management
 
 ### Types
