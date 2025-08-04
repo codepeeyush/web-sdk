@@ -230,27 +230,43 @@ function AIActionsComponent() {
 
 ### Components
 
-#### `YourGPTProvider` - Context Provider
+#### `YourGPTProvider` -  Wrapper
 
 ```tsx
+// app/layout.tsx
+import { Provider } from "./provider";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Provider>{children}</Provider>
+      </body>
+    </html>
+  );
+}
+
+// app/provider.tsx
+
 import { YourGPTProvider } from "@yourgpt/widget-web-sdk/react";
 
-function App() {
+export function Provider({ children }: { children: React.ReactNode }) {
   return (
     <YourGPTProvider
       config={{
-        widgetId: "your-widget-id",
-      }}
-      onInitialized={(sdk) => {
-        console.log("SDK initialized:", sdk);
-        // Set initial data, register global AI actions, etc.
+        widgetId: process.env.NEXT_PUBLIC_WIDGET_UID!,
+        endpoint: process.env.NEXT_PUBLIC_WIDGET_ENDPOINT!,
+        mode: "embedded",
       }}
       onError={(error) => {
-        console.error("SDK error:", error);
-        // Handle initialization errors
+        console.error("Widget Error:", error);
       }}
     >
-      <MyApp />
+      {children}
     </YourGPTProvider>
   );
 }
@@ -307,6 +323,23 @@ aiActions.registerAction("delete_user_data", async (data, helpers) => {
 ├── 📁 docs/                  # Documentation
 └── 📄 README.md              # This file
 ```
+
+## Next Steps
+
+Here is the setup guide for YourGPT dashboard.
+
+###  Integration with YourGPT Dashboard
+
+Create custom AI actions in YourGPT dashboard
+
+https://github.com/user-attachments/assets/ff983420-fa9c-43a2-9fed-534a2e208712
+
+### Choose your best suited model for your application
+
+Choose the best model from a wide variety of models
+
+<img width="1904" height="962" alt="select-model" src="https://github.com/user-attachments/assets/2655fba9-c701-4e5a-9a16-3bcc2fb7a914" />
+
 
 ## 🧪 Testing
 
