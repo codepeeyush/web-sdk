@@ -8,6 +8,10 @@
 
 Official YourGPT SDK for JavaScript/TypeScript and React applications. Integrate YourGPT's powerful chatbot widget into your web applications with modern, type-safe APIs.
 
+[![Watch the video](https://img.youtube.com/vi/aHHeeJIVEl0/maxresdefault.jpg)](https://youtu.be/aHHeeJIVEl0)
+
+### [Watch this video on YouTube](https://youtu.be/aHHeeJIVEl0)
+
 ## 🚀 Features
 
 - **🔄 Dual Package**: Both vanilla JS/TS (`@yourgpt/widget-web-sdk`) and React-specific (`@yourgpt/widget-web-sdk/react`) implementations
