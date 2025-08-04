@@ -8,16 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Clock, Target, Zap, Tag } from "lucide-react";
+import { Plus, Clock, Target, Zap, Tag, Sparkle, Sparkles } from "lucide-react";
 import { Todo, Priority, PRIORITY_CONFIG } from "@/types/todo";
 import { cn } from "@/lib/utils";
 
 interface CreateTodoFormProps {
   onCreateTodo: (todo: Omit<Todo, "id" | "createdAt" | "updatedAt">) => void;
   className?: string;
+  onAiAssistantClick?: () => void;
 }
 
-export function CreateTodoForm({ onCreateTodo, className }: CreateTodoFormProps) {
+export function CreateTodoForm({ onCreateTodo, className, onAiAssistantClick }: CreateTodoFormProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -54,8 +55,8 @@ export function CreateTodoForm({ onCreateTodo, className }: CreateTodoFormProps)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className={className}>
-          <Button className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg" size="lg">
+        <div className={className + " flex gap-2"}>
+          <Button className="gap-2 bg-gradient-to-r bg-neutral-200 text-neutral-800 hover:bg-neutral-300 shadow-lg" size="lg">
             <Plus className="h-5 w-5" />
             Create Task
           </Button>
