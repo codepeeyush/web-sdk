@@ -298,8 +298,7 @@ https://github.com/user-attachments/assets/733e6cee-6124-46f1-8f85-4f616b9cc945
 
 Choose the best model from a wide variety of models
 
-<img width="1904" height="962" alt="select-model" src="https://github.com/user-attachments/assets/2655fba9-c701-4e5a-9a16-3bcc2fb7a914" />
-
+<img width="1957" height="1014" alt="Choose a model" src="https://github.com/user-attachments/assets/f340006c-32af-43e0-921a-35898f4e185b" />
 
 ## 🧪 Testing
 
