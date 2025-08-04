@@ -93,31 +93,6 @@ function ChatButton() {
 
 ## 📖 Complete Documentation
 
-### 🎮 Widget Controls
-
-```typescript
-const sdk = YourGPT.getInstance();
-
-// Widget visibility and state
-sdk.open(); // Open the chat widget
-sdk.close(); // Close the chat widget
-sdk.toggle(); // Toggle widget open/closed state
-sdk.show(); // Show widget button/trigger
-sdk.hide(); // Hide widget button/trigger
-
-// Messaging
-sdk.sendMessage("Hello!", true); // Send message (auto-send: true)
-
-// Advanced features
-sdk.openBottomSheet("https://docs.example.com"); // Open bottom sheet
-sdk.startGame("quizMania", {
-  // Start interactive game
-  showExitConfirmation: true,
-  leadCapture: true,
-  gameConfig: { difficulty: "medium" },
-});
-```
-
 ### 🤖 AI Actions System
 
 Register custom AI-powered actions that your chatbot can trigger:
