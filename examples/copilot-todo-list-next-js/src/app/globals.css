@@ -136,7 +136,7 @@
   --chart-1: oklch(0.6 0.18 200);
   --chart-2: oklch(0.7 0.12 180);
   --chart-3: oklch(0.55 0.15 220);
-  --chart-4: oklch(0.65 0.10 160);
+  --chart-4: oklch(0.65 0.1 160);
   --chart-5: oklch(0.8 0.08 200);
   --sidebar: oklch(0.18 0.06 215);
   --sidebar-foreground: oklch(0.95 0.02 200);
@@ -260,4 +260,20 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.ygpt-chatbot {
+  .chatHeader {
+    padding-left: 12px;
+    /* background-color: #4954fb29; */
+    /* & * {
+      color: #4954fb;
+    } */
+
+    .ygpts-expander {
+      display: none;
+    }
+  }
+
+  --yourgptChatbotBotMessageBgColorHsl: 238, 96%, 63%;
 }

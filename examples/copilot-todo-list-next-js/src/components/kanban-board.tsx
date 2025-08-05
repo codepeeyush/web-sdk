@@ -2,23 +2,12 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragOverEvent,
-  useDroppable,
-  rectIntersection
-} from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors, DragOverEvent, useDroppable, rectIntersection } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Clock, CheckCircle2, Circle } from "lucide-react";
+import { MoreHorizontal, Clock, CheckCircle2, Circle, Sparkles } from "lucide-react";
 import { Todo, Status, COLUMNS } from "@/types/todo";
 import { KanbanCard } from "./kanban-card";
 import { CreateTodoForm } from "./create-todo-form";
@@ -37,13 +26,7 @@ function DroppableColumn({ id, children, isActive, isOverDropZone }: DroppableCo
   });
 
   return (
-    <div
-      ref={setNodeRef}
-      className={cn(
-        "flex-1 min-h-[200px] transition-all duration-200",
-        (isOver || isActive || isOverDropZone) && "bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-200 dark:ring-blue-800"
-      )}
-    >
+    <div ref={setNodeRef} className={cn("flex-1 min-h-[200px] transition-all duration-200", (isOver || isActive || isOverDropZone) && "bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-200 dark:ring-blue-800")}>
       {children}
     </div>
   );
@@ -61,13 +44,7 @@ function DroppableArea({ id, children }: DroppableAreaProps) {
   });
 
   return (
-    <div
-      ref={setNodeRef}
-      className={cn(
-        "min-h-[100px] flex-1 transition-all duration-200",
-        isOver && "bg-blue-50/30 dark:bg-blue-950/10 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg"
-      )}
-    >
+    <div ref={setNodeRef} className={cn("min-h-[100px] flex-1 transition-all duration-200", isOver && "bg-blue-50/30 dark:bg-blue-950/10 border-2 border-dashed border-blue-300 dark:border-blue-700 rounded-lg")}>
       {children}
     </div>
   );
@@ -78,9 +55,10 @@ interface KanbanBoardProps {
   onUpdateTodo: (todo: Todo) => void;
   onCreateTodo: (todo: Omit<Todo, "id" | "createdAt" | "updatedAt">) => void;
   onDeleteTodo: (id: string) => void;
+  onAiAssistantClick?: () => void;
 }
 
-export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }: KanbanBoardProps) {
+export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo, onAiAssistantClick }: KanbanBoardProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [draggedTodo, setDraggedTodo] = useState<Todo | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
@@ -111,7 +89,7 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
 
   const handleDragOver = (event: DragOverEvent) => {
     const { over } = event;
-    setOverId(over ? over.id as string : null);
+    setOverId(over ? (over.id as string) : null);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -135,13 +113,13 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
     let targetColumnId: Status | null = null;
 
     // Check if dropping directly on a column
-    if (COLUMNS.some(col => col.id === overId)) {
+    if (COLUMNS.some((col) => col.id === overId)) {
       targetColumnId = overId as Status;
     }
     // Check if dropping on a column drop area
-    else if (overId.endsWith('-drop-area')) {
-      const columnId = overId.replace('-drop-area', '');
-      if (COLUMNS.some(col => col.id === columnId)) {
+    else if (overId.endsWith("-drop-area")) {
+      const columnId = overId.replace("-drop-area", "");
+      if (COLUMNS.some((col) => col.id === columnId)) {
         targetColumnId = columnId as Status;
       }
     }
@@ -175,7 +153,11 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
         if (activeIndex !== overIndex) {
           const reorderedTodos = arrayMove(columnTodos, activeIndex, overIndex);
           // In a real app, you'd update the order in your backend
-          console.log("Reordered todos in column:", activeTodo.status, reorderedTodos.map(t => t.title));
+          console.log(
+            "Reordered todos in column:",
+            activeTodo.status,
+            reorderedTodos.map((t) => t.title)
+          );
         }
       }
     }
@@ -219,7 +201,9 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
           <h1 className="text-2xl font-bold text-foreground">Project Board</h1>
           <p className="text-muted-foreground">Drag and drop tasks to update their status</p>
         </div>
-        <CreateTodoForm onCreateTodo={handleCreateTodo} />
+        <div className="flex gap-2">
+          <CreateTodoForm onCreateTodo={handleCreateTodo} onAiAssistantClick={() => onAiAssistantClick?.()} />
+        </div>
       </div>
 
       {/* Stats Overview */}
@@ -233,7 +217,7 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
                   {getColumnIcon(column.id)}
                   <span className="font-medium">{column.title}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Badge variant="secondary">{stats.total}</Badge>
                   {stats.highPriority > 0 && (
                     <Badge variant="destructive" className="text-xs">
@@ -248,32 +232,16 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
       </div>
 
       {/* Kanban Board */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={rectIntersection}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={rectIntersection} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-300px)]">
           {COLUMNS.map((column) => {
             const isOverColumn = overId === column.id || overId === `${column.id}-drop-area`;
             const columnTodos = todosByColumn[column.id];
 
             return (
-              <motion.div
-                key={column.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * COLUMNS.indexOf(column) }}
-                className="flex flex-col"
-              >
+              <motion.div key={column.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * COLUMNS.indexOf(column) }} className="flex flex-col">
                 <SortableContext items={columnTodos.map((todo) => todo.id)} strategy={verticalListSortingStrategy}>
-                  <DroppableColumn
-                    id={column.id}
-                    isActive={!!activeId}
-                    isOverDropZone={isOverColumn}
-                  >
+                  <DroppableColumn id={column.id} isActive={!!activeId} isOverDropZone={isOverColumn}>
                     <Card className="flex-1 flex flex-col h-full">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center justify-between text-sm">
@@ -296,22 +264,12 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
                           <div className="space-y-3 min-h-[100px]">
                             <AnimatePresence mode="popLayout">
                               {columnTodos.map((todo) => (
-                                <KanbanCard
-                                  key={todo.id}
-                                  todo={todo}
-                                  onUpdate={onUpdateTodo}
-                                  onDelete={onDeleteTodo}
-                                  isActive={activeId === todo.id}
-                                />
+                                <KanbanCard key={todo.id} todo={todo} onUpdate={onUpdateTodo} onDelete={onDeleteTodo} isActive={activeId === todo.id} />
                               ))}
                             </AnimatePresence>
 
                             {columnTodos.length === 0 && (
-                              <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="flex flex-col items-center justify-center py-12 text-center"
-                              >
+                              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-12 text-center">
                                 <motion.div
                                   animate={{
                                     scale: [1, 1.1, 1],
@@ -327,9 +285,7 @@ export function KanbanBoard({ todos, onUpdateTodo, onCreateTodo, onDeleteTodo }:
                                   {getColumnIcon(column.id)}
                                 </motion.div>
                                 <p className="text-sm text-muted-foreground">No tasks in {column.title.toLowerCase()}</p>
-                                <p className="text-xs text-muted-foreground mt-1 opacity-60">
-                                  Drop tasks anywhere in this column
-                                </p>
+                                <p className="text-xs text-muted-foreground mt-1 opacity-60">Drop tasks anywhere in this column</p>
                               </motion.div>
                             )}
                           </div>

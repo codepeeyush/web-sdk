@@ -6,13 +6,10 @@ import { Todo, Status, Priority } from "@/types/todo";
 import { Navigation } from "@/components/navigation";
 import { TodoList } from "@/components/todo-app";
 import { KanbanBoard } from "@/components/kanban-board";
-import { YourGPT, useAIActions } from "@yourgpt/widget-web-sdk/react";
+import { useAIActions, YourGPTWidget } from "@yourgpt/widget-web-sdk/react";
 import { useTheme, type Theme } from "@/components/theme-provider";
-
-// Initialize SDK
-const inst = await YourGPT.init({
-  widgetId: process.env.NEXT_PUBLIC_WIDGET_ID!,
-});
+import { Sparkles } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface ToolFunction {
   arguments: string;
@@ -32,7 +29,7 @@ interface AppProps {
 }
 
 export function App({ view }: AppProps) {
-  const currentView = view;
+  const [currentView, setCurrentView] = useState<"list" | "kanban">(view);
   const [todos, setTodos] = useState<Todo[]>([]);
   const { changeTheme } = useTheme();
 
@@ -113,6 +110,7 @@ export function App({ view }: AppProps) {
       const actionData = data as ActionData;
       const args = actionData.action?.tool?.function?.arguments || `{}`;
       let parsedArgs;
+      console.log(args);
       try {
         parsedArgs = JSON.parse(args);
       } catch {
@@ -142,10 +140,11 @@ export function App({ view }: AppProps) {
 
       setTodos((prevTodos) => {
         const updatedTodos = prevTodos.map((todo) => {
+          console.log("parsedArgs", parsedArgs, prevTodos);
           // Check if todo matches all the criteria
           const matchesStatus = todo.status === from;
           const matchesCategory = !category || todo.category === category;
-          const matchesPriority = !priority || todo.priority === priority;
+          const matchesPriority = !priority || priority === "all" || todo.priority === priority;
           const matchesTag = !tag || (todo.tags && todo.tags.includes(tag));
 
           if (matchesStatus && matchesCategory && matchesPriority && matchesTag) {
@@ -166,7 +165,7 @@ export function App({ view }: AppProps) {
         // Build response message
         const filters = [];
         if (category) filters.push(`category "${category}"`);
-        if (priority) filters.push(`${priority} priority`);
+        if (priority && priority !== "all") filters.push(`${priority} priority`);
         if (tag) filters.push(`tag "${tag}"`);
         filterText = filters.length > 0 ? ` with ${filters.join(", ")}` : "";
         fromText = from.replace("_", " ");
@@ -447,19 +446,39 @@ export function App({ view }: AppProps) {
     setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
   };
 
-  return (
-    <div className="min-h-screen bg-background px-8 mr-[360px]">
-      <Navigation currentView={currentView} />
+  const [aiShown, setAiShown] = useState(false);
 
-      <main className="container mx-auto px-0 py-8">
-        <motion.div key={currentView} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
-          {currentView === "list" ? (
-            <TodoList todos={todos} onUpdateTodo={handleUpdateTodo} onCreateTodo={handleCreateTodo} onDeleteTodo={handleDeleteTodo} />
-          ) : (
-            <KanbanBoard todos={todos} onUpdateTodo={handleUpdateTodo} onCreateTodo={handleCreateTodo} onDeleteTodo={handleDeleteTodo} />
-          )}
+  const toggleAi = () => {
+    setAiShown(!aiShown);
+  };
+
+  return (
+    <div className="flex h-screen">
+      <div className="min-h-screen bg-background flex-1">
+        <Navigation currentView={currentView} onViewChange={setCurrentView} onAiAssistantClick={toggleAi} />
+        <div className="flex">
+          <main className=" px-0 flex gap-4 flex-1 h-[calc(100vh-64px)] overflow-y-auto">
+            <div className="container mx-auto pt-8 pb-12 px-8">
+              <motion.div key={currentView} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+                {currentView === "list" ? (
+                  <TodoList todos={todos} onUpdateTodo={handleUpdateTodo} onCreateTodo={handleCreateTodo} onDeleteTodo={handleDeleteTodo} />
+                ) : (
+                  <KanbanBoard todos={todos} onUpdateTodo={handleUpdateTodo} onCreateTodo={handleCreateTodo} onDeleteTodo={handleDeleteTodo} onAiAssistantClick={toggleAi} />
+                )}
+              </motion.div>
+
+              <div className="block h-12" />
+            </div>
+          </main>
+        </div>
+      </div>
+      <div className="flex sticky top-0 ">
+        <motion.div animate={{ width: aiShown ? "360px" : "0px", opacity: aiShown ? 1 : 0 }} className=" h-screen overflow-hidden border-l ">
+          <div className="min-w-[360px] h-full">
+            <YourGPTWidget />
+          </div>
         </motion.div>
-      </main>
+      </div>
     </div>
   );
 }
