@@ -7,6 +7,7 @@ import { YourGPTConfig, YourGPTError, WidgetState, EventHandler, EventUnsubscrib
 import { ChatbotAPI, AIActionsAPI, MessageData, EscalationData, SessionData, VisitorData, ContactData, GameOptions, AIActionHandler } from "../types";
 
 import { isBrowser, createDebugLogger, validateWidgetId, validateUrl, loadScript, waitFor, EventEmitter } from "../utils";
+import { WidgetRenderModeE } from "../types/enum";
 
 interface YourGPTEvents {
   stateChange: WidgetState;
@@ -53,7 +54,7 @@ class YourGPTSDK extends EventEmitter<YourGPTEvents> {
    * Initialize the SDK
    */
   public async init(config: YourGPTConfig): Promise<YourGPTSDK> {
-    window.YGC_MODE = config.mode || "floating";
+    window.YGC_WIDGET_RENDER_MODE = config.mode || WidgetRenderModeE.floating;
 
     if (this.isInitialized) {
       this.logger.warn("SDK already initialized");

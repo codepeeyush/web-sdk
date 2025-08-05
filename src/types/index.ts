@@ -2,6 +2,7 @@
  * YourGPT SDK Types
  */
 
+import { WidgetRenderModeE } from "./enum";
 import { WidgetState, EventHandler, EventUnsubscriber } from "./core";
 
 export * from "./core";
@@ -141,6 +142,6 @@ declare global {
       WIDGET_ENDPOINT?: string;
     };
     YOURGPT_WIDGET_UID?: string;
-    YGC_MODE: "floating" | "embedded";
+    YGC_WIDGET_RENDER_MODE: WidgetRenderModeE;
   }
 }
