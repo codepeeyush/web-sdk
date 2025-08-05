@@ -5,10 +5,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import YourGPT, { YourGPTSDK } from "../../core/YourGPT";
 import { YourGPTConfig, YourGPTError, WidgetState } from "../../types";
-
 declare global {
   interface Window {
-    YGC_MODE: "floating" | "embedded";
     YGC_WIDGET?: {
       renderEmbedded: (container: HTMLElement) => void;
     };

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useYourGPT } from "./YourGPTProvider";
+import { WidgetRenderModeE } from "../../types/enum";
 
 interface YourGPTWidgetProps {
   className?: string;
@@ -14,7 +15,7 @@ export function YourGPTWidget({ className, style, onMount, onUnmount }: YourGPTW
   const containerRef = useRef<HTMLDivElement>(null);
   const { isInitialized } = useYourGPT();
   const [isBrowser, setIsBrowser] = useState(false);
-  const mode = typeof window !== "undefined" ? window.YGC_MODE : "floating";
+  const mode = typeof window !== "undefined" ? window.YGC_WIDGET_RENDER_MODE : WidgetRenderModeE.floating;
 
   useEffect(() => {
     setIsBrowser(true);
