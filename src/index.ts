@@ -44,3 +44,5 @@ export const VERSION = "1.0.0";
 
 // Re-export default
 export { default } from "./core/YourGPT";
+
+export { WidgetRenderModeE } from "./types/enum";

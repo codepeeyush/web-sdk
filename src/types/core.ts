@@ -2,6 +2,8 @@
  * Core Types for YourGPT SDK
  */
 
+import { WidgetRenderModeE } from "./enum";
+
 // Core SDK Configuration
 export interface YourGPTConfig {
   widgetId: string;
@@ -9,7 +11,7 @@ export interface YourGPTConfig {
   autoLoad?: boolean;
   debug?: boolean;
   whitelabel?: boolean;
-  mode?: "floating" | "embedded";
+  mode?: WidgetRenderModeE;
 }
 
 // Widget State
