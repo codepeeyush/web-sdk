@@ -1,12 +1,16 @@
 # YourGPT SDK
 
-[![npm version](https://badge.fury.io/js/@yourgpt/widget-web-sdk.svg)](https://badge.fury.io/js/@yourgpt/widget-web-sdk)
+![NPM Version](https://img.shields.io/npm/v/%40yourgpt%2Fwidget-web-sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/Build-Passing-green.svg)]()
 [![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen.svg)]()
 
 Official YourGPT SDK for JavaScript/TypeScript and React applications. Integrate YourGPT's powerful chatbot widget into your web applications with modern, type-safe APIs.
+
+[![Watch the video](https://img.youtube.com/vi/aHHeeJIVEl0/maxresdefault.jpg)](https://youtu.be/aHHeeJIVEl0)
+
+### [Watch this video on YouTube](https://youtu.be/aHHeeJIVEl0)
 
 ## 🚀 Features
 
@@ -29,7 +33,7 @@ npm install @yourgpt/widget-web-sdk
 
 ## ⚡ Quick Start
 
-### Vanilla JavaScript/TypeScript
+### Vanilla JavaScript/TypeScript Setup
 
 ```typescript
 import { YourGPT } from "@yourgpt/widget-web-sdk";
@@ -52,7 +56,7 @@ sdk.onMessageReceived((data) => {
 });
 ```
 
-### React Integration
+### React Setup
 
 ```tsx
 import { YourGPT, useYourGPTChatbot, useAIActions } from "@yourgpt/widget-web-sdk/react";
@@ -92,102 +96,6 @@ function ChatButton() {
 ```
 
 ## 📖 Complete Documentation
-
-### 🔧 Configuration
-
-```typescript
-interface YourGPTConfig {
-  widgetId: string; // Required: Your YourGPT widget ID
-  endpoint?: string; // Optional: Custom endpoint URL
-  autoLoad?: boolean; // Optional: Auto-load widget (default: true)
-  debug?: boolean; // Optional: Enable debug logging
-  whitelabel?: boolean; // Optional: Use whitelabel endpoint
-}
-```
-
-### 🎮 Widget Controls
-
-```typescript
-const sdk = YourGPT.getInstance();
-
-// Widget visibility and state
-sdk.open(); // Open the chat widget
-sdk.close(); // Close the chat widget
-sdk.toggle(); // Toggle widget open/closed state
-sdk.show(); // Show widget button/trigger
-sdk.hide(); // Hide widget button/trigger
-
-// Messaging
-sdk.sendMessage("Hello!", true); // Send message (auto-send: true)
-
-// Advanced features
-sdk.openBottomSheet("https://docs.example.com"); // Open bottom sheet
-sdk.startGame("quizMania", {
-  // Start interactive game
-  showExitConfirmation: true,
-  leadCapture: true,
-  gameConfig: { difficulty: "medium" },
-});
-```
-
-### 📊 Data Management
-
-The SDK provides three types of data management based on your existing SdkManager implementation:
-
-```typescript
-// Session data (temporary, tied to current session)
-sdk.setSessionData({
-  userId: "123",
-  plan: "premium",
-  sessionStart: new Date().toISOString(),
-  features: ["ai-actions", "games"],
-});
-
-// Visitor data (analytics and tracking)
-sdk.setVisitorData({
-  source: "website",
-  campaign: "summer2024",
-  userAgent: navigator.userAgent,
-  viewport: `${window.innerWidth}x${window.innerHeight}`,
-});
-
-// Contact data (user identity - requires email OR phone)
-sdk.setContactData({
-  email: "user@example.com",
-  name: "John Doe",
-  phone: "+1234567890",
-  user_hash: "secure-hash-for-identity", // For secure user identification
-});
-```
-
-### 🎯 Event Handling
-
-Based on your existing SdkManager event system:
-
-```typescript
-// Widget lifecycle events
-sdk.onInit(() => {
-  console.log("Widget initialized and connected");
-});
-
-// Real-time message events
-sdk.onMessageReceived((data) => {
-  console.log("Message:", data);
-  // Handle notifications, analytics, etc.
-});
-
-// Human escalation events
-sdk.onEscalatedToHuman((data) => {
-  console.log("Escalated to human agent:", data);
-  // Show notifications, update UI, etc.
-});
-
-// Widget state changes
-sdk.onWidgetPopup((isOpen) => {
-  console.log("Widget is", isOpen ? "open" : "closed");
-  // Sync with parent application state
-});
-```
 
 ### 🤖 AI Actions System
 
@@ -235,37 +143,7 @@ sdk.registerAIAction("get_system_info", async (data, helpers) => {
 sdk.unregisterAIAction("delete_file");
 ```
 
-## ⚛️ React Integration
-
-### Hooks
-
-#### `useYourGPTChatbot()` - Main Widget Control
-
-```typescript
-function ChatComponent() {
-  const chatbot = useYourGPTChatbot();
-
-  return (
-    <div>
-      {/* Widget state */}
-      <div>Status: {chatbot.isConnected ? "Connected" : "Disconnected"}</div>
-      <div>Messages: {chatbot.messageCount}</div>
-
-      {/* Widget controls */}
-      <button onClick={chatbot.open}>Open Chat</button>
-      <button onClick={chatbot.close}>Close Chat</button>
-      <button onClick={chatbot.toggle}>Toggle Chat</button>
-
-      {/* Messaging */}
-      <button onClick={() => chatbot.sendMessage("Hello!")}>Send Message</button>
-
-      {/* Advanced features */}
-      <button onClick={() => chatbot.openBottomSheet("https://docs.example.com")}>Open Documentation</button>
-      <button onClick={() => chatbot.startGame("quizMania", { showExitConfirmation: true })}>Start Quiz Game</button>
-    </div>
-  );
-}
-```
+### 🪝 Hooks
 
 #### `useAIActions()` - AI Actions Management
 
@@ -319,110 +197,40 @@ function AIActionsComponent() {
 
 ### Components
 
-#### `YourGPTProvider` - Context Provider
+#### `YourGPTProvider` - Wrapper
 
 ```tsx
+// app/layout.tsx
+import { Provider } from "./provider";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Provider>{children}</Provider>
+      </body>
+    </html>
+  );
+}
+
+// app/provider.tsx
+
 import { YourGPTProvider } from "@yourgpt/widget-web-sdk/react";
 
-function App() {
+export function Provider({ children }: { children: React.ReactNode }) {
   return (
     <YourGPTProvider
       config={{
         widgetId: "your-widget-id",
-      }}
-      onInitialized={(sdk) => {
-        console.log("SDK initialized:", sdk);
-        // Set initial data, register global AI actions, etc.
+        mode: "embedded",
       }}
       onError={(error) => {
-        console.error("SDK error:", error);
-        // Handle initialization errors
+        console.error("Widget Error:", error);
       }}
     >
-      <MyApp />
+      {children}
     </YourGPTProvider>
   );
-}
-```
-
-#### `YourGPTWidget` - Simple Widget Component
-
-```tsx
-import { YourGPTWidget } from "@yourgpt/widget-web-sdk/react";
-
-function App() {
-  return (
-    <div>
-      <h1>My Application</h1>
-
-      <YourGPTWidget
-        config={{
-          widgetId: "your-widget-id",
-        }}
-        onMessageReceived={(data) => {
-          console.log("Message received:", data);
-          // Handle message notifications
-        }}
-        onEscalatedToHuman={(data) => {
-          console.log("Escalated to human:", data);
-          // Show escalation notifications
-        }}
-      />
-    </div>
-  );
-}
-```
-
-## 🔧 Advanced Usage
-
-### Error Handling
-
-```typescript
-import { YourGPTError } from "@yourgpt/widget-web-sdk";
-
-try {
-  await YourGPT.init({
-    widgetId: "invalid-id",
-  });
-} catch (error) {
-  if (error instanceof YourGPTError) {
-    console.error("YourGPT Error:", error.message, error.code);
-    // Handle specific YourGPT errors
-  } else {
-    console.error("Unknown error:", error);
-  }
-}
-```
-
-### Server-Side Rendering (SSR)
-
-```typescript
-import { isBrowser } from "@yourgpt/widget-web-sdk";
-
-// Only initialize in browser environment
-if (isBrowser()) {
-  await YourGPT.init({
-    widgetId: "your-widget-id",
-  });
-}
-
-// React SSR-safe hook usage
-function MyComponent() {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const chatbot = useYourGPTChatbot();
-
-  const handleOpen = () => {
-    if (isClient) {
-      chatbot.open();
-    }
-  };
-
-  return <button onClick={handleOpen}>Open Chat</button>;
 }
 ```
 
@@ -476,6 +284,22 @@ aiActions.registerAction("delete_user_data", async (data, helpers) => {
 ├── 📁 docs/                  # Documentation
 └── 📄 README.md              # This file
 ```
+
+## Next Steps
+
+Here is the setup guide for YourGPT dashboard.
+
+### Integration with YourGPT Dashboard
+
+Create custom AI actions in YourGPT dashboard
+
+https://github.com/user-attachments/assets/733e6cee-6124-46f1-8f85-4f616b9cc945
+
+### Choose your best suited model for your application
+
+Choose the best model from a wide variety of models
+
+<img width="1957" height="1014" alt="Choose a model" src="https://github.com/user-attachments/assets/f340006c-32af-43e0-921a-35898f4e185b" />
 
 ## 🧪 Testing
 
@@ -537,18 +361,13 @@ dist/
 
 ## 📋 API Reference
 
-### Core SDK Classes
+### Core SDK Class
 
 - **`YourGPTSDK`**: Main SDK class
-- **`YourGPT`**: Static methods for easy access
-- **`YourGPTError`**: Custom error handling
 
-### React Hooks
+### React Hook
 
-- **`useYourGPT()`**: Low-level SDK access
-- **`useYourGPTChatbot()`**: Main widget control hook
 - **`useAIActions()`**: AI actions management
-- **`useYourGPTContext()`**: Access provider context
 
 ### Types
 
