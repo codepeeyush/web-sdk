@@ -11,8 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import DialogComponent from "./Dialog"
 import { Sparkles } from "lucide-react"
+import Logo from "./Logo"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -89,7 +89,7 @@ export default function Navbar({ isWidgetOpen, onToggleWidget }: NavbarProps) {
           {/* Main nav */}
           <div className="flex items-center gap-6">
             <a href="#" className="text-primary hover:text-primary/90">
-              <h1 className="text-xl font-bold">AstroUI</h1>
+              <Logo className="w-10 h-10" />
             </a>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
@@ -112,7 +112,6 @@ export default function Navbar({ isWidgetOpen, onToggleWidget }: NavbarProps) {
         {/* Right side */}
         <div className="flex items-center gap-2">
           {/* Book a demo modal trigger */}
-          <DialogComponent />
           <Button variant="outline" size="lg" onClick={onToggleWidget} className="flex items-center gap-2">
             <Sparkles className="w-4 h-4" />
             {isWidgetOpen ? "Close AI" : "Ask AI"}

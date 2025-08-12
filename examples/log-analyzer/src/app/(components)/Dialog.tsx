@@ -19,7 +19,7 @@ export default function DialogComponent() {
             </DialogTrigger>
             <DialogContent className="min-h-fit! min-w-fit! overflow-auto">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2"><PhoneCall className="w-4 h-4" /> Book a demo </DialogTitle>
+                    <DialogTitle className="flex items-center gap-2 mb-4"><PhoneCall className="w-4 h-4" /> Book a demo </DialogTitle>
                 </DialogHeader>
                 <CalendarComponent />
             </DialogContent>
