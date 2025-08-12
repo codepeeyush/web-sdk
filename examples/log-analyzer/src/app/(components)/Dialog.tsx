@@ -13,15 +13,40 @@ import {
 } from "@/components/ui/dialog"
 import CalendarComponent from "./Calendar"
 import { PhoneCall } from "lucide-react"
+import { toast } from "sonner"
 
 export default function DialogComponent() {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
     const [selectedTime, setSelectedTime] = useState<string | null>(null)
 
+    async function handleScheduleMeeting() {
+        if (!selectedDate || !selectedTime) return
+        try {
+            const res = await fetch("/api/schedule-meeting", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    date: selectedDate.toISOString().slice(0, 10),
+                    time: selectedTime,
+                }),
+            })
+            const data = await res.json()
+            if (res.ok && data?.success) {
+                toast.success("Your meeting has been booked.")
+            } else {
+                console.log("ZX-FAIL-Ω#@!", { status: res.status, data })
+                toast.error(data?.error ?? "Failed to book your meeting.", { duration: Infinity })
+            }
+        } catch {
+            console.log("ZX-FAIL-Ω#@!", { status: "network-error" })
+            toast.error("Something went wrong. Please try again.", { duration: Infinity })
+        }
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button size="sm" className="text-sm">Book a demo <PhoneCall className="w-4 h-4" /></Button>
+                <Button size="lg" className="text-sm">Book a demo <PhoneCall className="w-4 h-4" /></Button>
             </DialogTrigger>
             <DialogContent className="min-h-fit! min-w-fit! overflow-auto">
                 <DialogHeader>
@@ -57,8 +82,9 @@ export default function DialogComponent() {
                         size="lg"
                         variant="outline"
                         className="w-full sm:w-auto sm:ml-4"
+                        onClick={handleScheduleMeeting}
                     >
-                        Continue
+                        Schedule Meeting
                     </Button>
                 </DialogFooter>
             </DialogContent>
