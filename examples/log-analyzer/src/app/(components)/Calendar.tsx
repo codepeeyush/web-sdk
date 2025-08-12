@@ -35,7 +35,7 @@ export default function CalendarComponent() {
   ]
 
   return (
-    <div className="rounded-md border w-full max-w-md">
+    <div className="rounded-md border w-full max-w-4xl">
       <div className="flex max-sm:flex-col">
         <Calendar
           mode="single"
@@ -46,12 +46,19 @@ export default function CalendarComponent() {
               setTime(null)
             }
           }}
-          className="p-2 sm:pe-5"
+          className="p-4 sm:pe-8"
+          classNames={{
+            day_button: "size-12 md:size-14 text-base",
+            day: "size-12 md:size-14 text-base",
+            weekday: "size-12 md:size-14 text-sm",
+            month_caption: "h-10 md:h-12",
+            caption_label: "text-base md:text-lg",
+          }}
           disabled={[
             { before: today },
           ]}
         />
-        <div className="relative w-full max-sm:h-48 sm:w-40">
+        <div className="relative w-full max-sm:h-72 sm:w-80">
           <div className="absolute inset-0 py-4 max-sm:border-t">
             <ScrollArea className="h-full sm:border-s">
               <div className="space-y-3">
@@ -60,12 +67,12 @@ export default function CalendarComponent() {
                     {format(date, "EEEE, d")}
                   </p>
                 </div>
-                <div className="grid gap-1.5 px-5 max-sm:grid-cols-2">
+                <div className="grid gap-2 px-5 max-sm:grid-cols-2">
                   {timeSlots.map(({ time: timeSlot, available }) => (
                     <Button
                       key={timeSlot}
                       variant={time === timeSlot ? "default" : "outline"}
-                      size="sm"
+                      size="default"
                       className="w-full"
                       onClick={() => setTime(timeSlot)}
                       disabled={!available}
