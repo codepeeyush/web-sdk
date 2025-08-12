@@ -15,7 +15,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
         mode: WidgetRenderModeE.embedded,
       }}
     >
-      <>{children}</>
+      {children}
     </YourGPTProvider>
   );
 }

@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -11,7 +12,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import DialogComponent from "./Dialog"
-import { YourGPTWidget } from "@yourgpt/widget-web-sdk/react"
+import { Sparkles } from "lucide-react"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -21,7 +22,12 @@ const navigationLinks = [
   { href: "#contact", label: "Contact" },
 ]
 
-export default function Navbar() {
+type NavbarProps = {
+  isWidgetOpen: boolean
+  onToggleWidget: () => void
+}
+
+export default function Navbar({ isWidgetOpen, onToggleWidget }: NavbarProps) {
   return (
     <header className="border-b px-4 md:px-6 fixed top-0 left-0 right-0 z-50 bg-background">
       <div className="flex h-16 items-center justify-between gap-4">
@@ -105,9 +111,12 @@ export default function Navbar() {
         </div>
         {/* Right side */}
         <div className="flex items-center gap-2">
-          <YourGPTWidget />
           {/* Book a demo modal trigger */}
           <DialogComponent />
+          <Button variant="outline" size="lg" onClick={onToggleWidget} className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            {isWidgetOpen ? "Close AI" : "Ask AI"}
+          </Button>
         </div>
       </div>
     </header>

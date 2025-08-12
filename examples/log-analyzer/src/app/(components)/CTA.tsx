@@ -13,7 +13,7 @@ interface ContactProps {
     web?: { label: string; url: string };
 }
 
-export default function Contact({
+export default function CTA({
     title = "Contact Us",
     description = "We are available for questions, feedback, or collaboration opportunities. Let us know how we can help!",
     phone = "(123) 34567890",
