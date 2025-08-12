@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import DialogComponent from "./Dialog"
+import { YourGPTWidget } from "@yourgpt/widget-web-sdk/react"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -104,7 +105,7 @@ export default function Navbar() {
         </div>
         {/* Right side */}
         <div className="flex items-center gap-2">
-
+          <YourGPTWidget />
           {/* Book a demo modal trigger */}
           <DialogComponent />
         </div>
