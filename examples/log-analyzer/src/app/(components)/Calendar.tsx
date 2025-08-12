@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-export default function CalendarComponent() {
+type CalendarComponentProps = {
+  onSelectionChange?: (selection: { date: Date; time: string | null }) => void
+}
+
+export default function CalendarComponent({
+  onSelectionChange,
+}: CalendarComponentProps) {
   const today = new Date()
   const [date, setDate] = useState<Date>(today)
   const [time, setTime] = useState<string | null>(null)
@@ -44,6 +50,7 @@ export default function CalendarComponent() {
             if (newDate) {
               setDate(newDate)
               setTime(null)
+              onSelectionChange?.({ date: newDate, time: null })
             }
           }}
           className="p-4 sm:pe-8"
@@ -71,10 +78,19 @@ export default function CalendarComponent() {
                   {timeSlots.map(({ time: timeSlot, available }) => (
                     <Button
                       key={timeSlot}
-                      variant={time === timeSlot ? "default" : "outline"}
+                      variant={
+                        available
+                          ? time === timeSlot
+                            ? "default"
+                            : "outline"
+                          : "secondary"
+                      }
                       size="default"
-                      className="w-full"
-                      onClick={() => setTime(timeSlot)}
+                      className={`w-full ${!available ? "disabled:opacity-100" : ""}`}
+                      onClick={() => {
+                        setTime(timeSlot)
+                        onSelectionChange?.({ date, time: timeSlot })
+                      }}
                       disabled={!available}
                     >
                       {timeSlot}

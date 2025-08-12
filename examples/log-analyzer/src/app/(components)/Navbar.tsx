@@ -88,8 +88,9 @@ export default function Navbar({ isWidgetOpen, onToggleWidget }: NavbarProps) {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <a href="#" className="text-primary hover:text-primary/90">
+            <a href="#" className="text-primary hover:text-primary/90 flex items-center gap-2">
               <Logo className="w-10 h-10" />
+              <h1 className="text-xl font-bold">AstroUI</h1>
             </a>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
