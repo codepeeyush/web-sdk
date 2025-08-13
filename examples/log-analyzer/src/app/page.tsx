@@ -1,5 +1,5 @@
 "use client"
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import CTA from "./(components)/CTA";
 import Footer from "./(components)/Footer";
 import Hero from "./(components)/Hero";
@@ -45,25 +45,45 @@ interface YourGPTExecutor {
     ): Promise<string> | string;
 }
 
+interface ToolFunction {
+    arguments: string;
+    name: string;
+}
 
-const getChatbot = (): YourGPTExecutor | undefined => {
-    if (typeof window === "undefined") return undefined;
-    const w = window as unknown as { $yourgptChatbot?: YourGPTExecutor };
-    return w.$yourgptChatbot;
-};
-
-
-
+interface ActionData {
+    action: {
+        tool: {
+            function: ToolFunction;
+        };
+    };
+}
 
 export default function Home() {
-    const aiActions = useAIActions();
+    const { registerAction, unregisterAction } = useAIActions();
 
-    const initCapture = async () => {
+    const getChatbot = useCallback((): YourGPTExecutor | undefined => {
+        if (typeof window === "undefined") return undefined;
+        const w = window as unknown as { $yourgptChatbot?: YourGPTExecutor };
+        return w.$yourgptChatbot;
+    }, []);
+
+
+    const initCapture = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
+        const actionData = data as ActionData;
+        const args = actionData.action?.tool?.function?.arguments || `{}`;
+        try {
+            JSON.parse(args);
+        } catch {
+            action.respond("Error parsing arguments.");
+            return;
+        }
+
         const ygc = getChatbot();
         if (!ygc) {
             action.respond("Chatbot SDK not ready.");
             return;
         }
+
         await ygc.execute("logs:initCapture");
         await ygc.execute("network:initCapture", {
             captureOnlyFailed: true,
@@ -87,15 +107,15 @@ export default function Home() {
             console.warn("[NetworkAnalyzer] getEntries failed", error);
             action.respond("Network capture initialized, but fetching entries failed.");
         }
-    }
+    }, [getChatbot]);
 
     useEffect(() => {
-        aiActions.registerAction("init_capture", initCapture);
-        
+        registerAction("init_capture", initCapture);
+
         return () => {
-            aiActions.unregisterAction("init_capture");
+            unregisterAction("init_capture");
         };
-    }, [aiActions]);
+    }, [registerAction, unregisterAction, initCapture]);
 
     return (
         <>
