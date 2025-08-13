@@ -115,7 +115,7 @@ export default function Home() {
         return () => {
             unregisterAction("init_capture");
         };
-    }, [registerAction, unregisterAction, initCapture]);
+    }, []);
 
     return (
         <>
