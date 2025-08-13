@@ -5,22 +5,22 @@ export default function Services() {
     // Data for the service cards
     const services = [
         {
-            title: "Web Development",
+            title: "Managed Hosting",
             image: "https://framerusercontent.com/images/PGqhbyNizzg0WF0Ff8Ct1xJCz4.png?scale-down-to=512",
             overlayImage: "https://framerusercontent.com/images/R8KAWJ8XJ7xyTu7ucAu7MwYY.png?scale-down-to=512"
         },
         {
-            title: "Creative Design",
+            title: "Global CDN & Edge",
             image: "https://framerusercontent.com/images/icQGsV71x2rSlISc1VdMnw1qP0.png?scale-down-to=512",
             overlayImage: "https://framerusercontent.com/images/lXJpgpSzhcdgjAHyzQ8gL6xZio.png?scale-down-to=512"
         },
         {
-            title: "Branding",
+            title: "Autoscaling & Reliability",
             image: "https://framerusercontent.com/images/fDuEIn62K1IFn5Ej7fSyTMA71og.png?scale-down-to=512",
             overlayImage: "https://framerusercontent.com/images/swGfymsPbpYnmJh0xWYUDsjYEVw.png?scale-down-to=512"
         },
         {
-            title: "Product Design",
+            title: "One-Click Deploys",
             image: "https://framerusercontent.com/images/fTivRAMCNvUFDAp9M0oddRMjk.png?scale-down-to=512",
             overlayImage: "https://framerusercontent.com/images/ykQMkxdWQtCI1O7dEHnQs9vQmME.png?scale-down-to=512"
         }
@@ -33,10 +33,10 @@ export default function Services() {
                     {/* Section Header */}
                     <div className="text-center mb-12 sm:mb-16">
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
-                            How Can I Help?
+                            What We Offer
                         </h2>
                         <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 font-light">
-                            Let&apos;s turn your vision into something amazing.
+                            Everything you need to host, scale, and secure your apps.
                         </p>
                     </div>
 

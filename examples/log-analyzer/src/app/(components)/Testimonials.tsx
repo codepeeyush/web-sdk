@@ -4,58 +4,58 @@ import { motion } from "motion/react";
 
 const testimonials = [
     {
-        text: "We shipped a new dashboard in days. The primitives are accessible and headless, and styling with Tailwind was effortless.",
+        text: "We migrated in a day and saw load times drop by 40%. The global CDN and edge caching are incredible.",
         image: "https://avatar.vercel.sh/jack",
         name: "Jack Harper",
         role: "Frontend Engineer",
     },
     {
-        text: "TypeScript types are rock-solid. Autocomplete and prop docs made the developer experience a joy.",
+        text: "Zero-downtime deploys and instant rollbacks let us ship multiple times a day without fear.",
         image: "https://avatar.vercel.sh/sara",
         name: "Sara Kim",
-        role: "Product Designer",
+        role: "Product Manager",
     },
     {
-        text: "Design tokens and theming let us adopt our brand instantly. Dark mode was a one-liner.",
+        text: "Autoscaling handled our launch traffic spike automatically. No pager duty this time.",
         image: "https://avatar.vercel.sh/michael",
         name: "Michael Chen",
         role: "Tech Lead",
     },
     {
-        text: "Documentation is excellent—copy-paste examples and clear composition patterns saved us hours.",
+        text: "Support is outstanding—real engineers who helped us tune caching and observability.",
         image: "https://avatar.vercel.sh/liwei",
         name: "Li Wei",
-        role: "UI Engineer",
+        role: "DevOps Engineer",
     },
     {
-        text: "Performance stayed snappy. Tree-shaking kept bundles lean and there's no runtime CSS overhead.",
+        text: "Costs are predictable. Usage insights and spend guardrails saved our team thousands.",
         image: "https://avatar.vercel.sh/amanda",
         name: "Amanda Brooks",
         role: "Engineering Manager",
     },
     {
-        text: "Accessibility is baked in—focus management, ARIA, and keyboard navigation worked out of the box.",
+        text: "Security features like managed TLS, WAF, and per-region controls checked all our compliance boxes.",
         image: "https://avatar.vercel.sh/diego",
         name: "Diego Santos",
-        role: "Accessibility Specialist",
+        role: "Security Lead",
     },
     {
-        text: "Composable APIs match our mental model. It feels like building blocks that just snap together.",
+        text: "Git-to-deploy is seamless. Preview environments for every PR changed our workflow.",
         image: "https://avatar.vercel.sh/fatima",
         name: "Fatima Noor",
-        role: "Staff Frontend Engineer",
+        role: "Staff Engineer",
     },
     {
-        text: "Consistency across components reduced cognitive load—our juniors were productive on day one.",
+        text: "Edge functions put logic close to users. Latency to APAC dropped dramatically.",
         image: "https://avatar.vercel.sh/oliver",
         name: "Oliver Grant",
         role: "CTO",
     },
     {
-        text: "Releases are steady and well-documented. Semantic versioning and clear changelogs made upgrades painless.",
+        text: "The dashboard is clear and powerful—logs, metrics, and alerts in one place.",
         image: "https://avatar.vercel.sh/jules",
         name: "Jules Martin",
-        role: "Design Systems Lead",
+        role: "Platform Lead",
     },
 ];
 

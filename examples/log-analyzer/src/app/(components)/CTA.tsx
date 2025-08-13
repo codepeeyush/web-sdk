@@ -19,15 +19,15 @@ export default function CTA() {
             <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-8 px-8 py-12 md:grid-cols-2">
                 <ContainerStagger>
                     <ContainerAnimated className="mb-4 block text-xs font-medium text-rose-500 md:text-sm">
-                        UI Components, Ready to Ship
+                        Cloud Hosting, Ready to Scale
                     </ContainerAnimated>
                     <ContainerAnimated className="text-4xl font-semibold md:text-[2.4rem] tracking-tight">
-                        Build Modern UIs Faster
+                        Deploy Faster, Scale Effortlessly
                     </ContainerAnimated>
                     <ContainerAnimated className="my-4 text-base text-slate-700 md:my-6 md:text-lg">
-                        A production-ready UI component library for React and Tailwind CSS.
-                        Accessible, themeable, and engineered for speed so you can ship
-                        beautiful apps without reinventing the basics.
+                        Fully managed edge hosting with global CDN, autoscaling, instant rollbacks,
+                        and zero-downtime deploys. Secure, reliable, and developer-friendly so you can
+                        focus on your product—not your infrastructure.
                     </ContainerAnimated>
                     <ContainerAnimated>
                         <DialogComponent />

@@ -18,9 +18,9 @@ export default function Hero() {
             <div className="animation-delay-8 animate-fadeIn mt-20 flex  flex-col items-center justify-center px-4 text-center md:mt-20">
                 <div className="z-10 mb-6 mt-10 sm:justify-center md:mb-4 md:mt-20">
                     <div className="relative flex items-center whitespace-nowrap rounded-full border bg-popover px-3 py-1 text-xs leading-6  text-primary/60 ">
-                        <DIcons.Shapes className="h-5 p-1" /> Introducing AstroUI.
+                        <DIcons.Shapes className="h-5 p-1" /> Introducing AstroHost.
                         <a
-                            href="/products/dicons"
+                            href="#services"
                             rel="noreferrer"
                             className="hover:text-ali ml-1 flex items-center font-semibold"
                         >
@@ -53,7 +53,7 @@ export default function Hero() {
                                     strokeWidth={4}
                                     className="text-ali absolute -bottom-5 -right-5 h-10 w-10"
                                 />
-                                Your complete platform for beautiful UIs.
+                                Your complete platform for blazing-fast hosting.
                             </h1>
                             <div className="flex items-center justify-center gap-1">
                                 <span className="relative flex h-3 w-3 items-center justify-center">
@@ -66,21 +66,21 @@ export default function Hero() {
                     </div>
 
                     <h1 className="mt-8 text-2xl md:text-2xl text-center font-bold text-primary">
-                        Welcome to AstroUI!
+                        Welcome to AstroHost!
                     </h1>
 
                     <p className="md:text-md mx-auto mb-16 mt-2 max-w-2xl px-6 text-sm text-primary/60 sm:px-6 md:max-w-4xl md:px-20 lg:text-lg">
-                        AstroUI is a collection of beautiful and accessible UI components to help you build stunning web applications.
+                        AstroHost is a modern hosting platform for web apps and APIs. Deploy in seconds, scale globally, and ship confidently with built-in CDN, autoscaling, observability, and zero-downtime rollouts.
                     </p>
                     <div className="flex justify-center gap-2">
-                        <Link href={"#contact"}>
-                            <Button variant="default" size="lg">
-                                Start Project
+                        <Link href={"/dashboard"}>
+                            <Button variant="default" size="lg" className="cursor-pointer">
+                                Go to Dashboard
                             </Button>
                         </Link>
                         <Link href={"#services"}>
-                            <Button variant="outline" size="lg">
-                                Explore Components
+                            <Button variant="outline" size="lg" className="cursor-pointer">
+                                Explore Services
                             </Button>
                         </Link>
                     </div>

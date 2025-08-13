@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "./provider";
+import AppFrame from "./(components)/AppFrame";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AstroUI",
-  description: "A UI library for modern web applications.",
+  title: "AstroHost",
+  description: "Fast, reliable hosting for modern web applications.",
 };
 
 export default function RootLayout({
@@ -30,7 +31,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Provider>
-          {children}
+          <AppFrame>
+            {children}
+          </AppFrame>
           <Toaster richColors position="bottom-center" closeButton />
         </Provider>
       </body>
