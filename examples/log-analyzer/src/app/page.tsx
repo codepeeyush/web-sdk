@@ -12,6 +12,16 @@ interface YourGPTExecutor {
     execute(action: "logs:initCapture"): Promise<void> | void;
     execute(action: "logs:stopCapture"): Promise<void> | void;
     execute(action: "logs:clearLogs"): Promise<void> | void;
+    execute(
+        action: "logs:getLogs",
+        filters?: {
+            level?: ("log" | "error" | "warn" | "info" | "debug")[];
+            from?: number;
+            to?: number;
+            limit?: number;
+            order?: "asc" | "desc";
+        }
+    ): Promise<string> | string;
 
     // Network
     execute(
@@ -68,7 +78,7 @@ export default function Home() {
     }, []);
 
 
-    const initCapture = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
+    const captureNetwork = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
         const actionData = data as ActionData;
         const args = actionData.action?.tool?.function?.arguments || `{}`;
         try {
@@ -109,11 +119,55 @@ export default function Home() {
         }
     }, [getChatbot]);
 
+    const captureLogs = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
+        const actionData = data as ActionData;
+        const args = actionData.action?.tool?.function?.arguments || `{}`;
+        let parsed: {
+            level?: ("log" | "error" | "warn" | "info" | "debug")[];
+            from?: number;
+            to?: number;
+            limit?: number;
+            order?: "asc" | "desc";
+        } = {};
+        try {
+            parsed = JSON.parse(args);
+        } catch {
+            action.respond("Error parsing arguments.");
+            return;
+        }
+
+        const ygc = getChatbot();
+        if (!ygc) {
+            action.respond("Chatbot SDK not ready.");
+            return;
+        }
+
+        await ygc.execute("logs:initCapture");
+
+        try {
+            const json = await ygc.execute("logs:getLogs", {
+                level: parsed.level ?? ["error", "warn"],
+                from: parsed.from ?? Date.now() - 5 * 60 * 1000,
+                to: parsed.to ?? Date.now(),
+                limit: parsed.limit ?? 100,
+                order: parsed.order ?? "desc",
+            });
+            const logs = typeof json === "string" ? JSON.parse(json) : json;
+            const count = Array.isArray(logs) ? logs.length : 0;
+            console.log("[LogsAnalyzer] logs", logs);
+            action.respond(`Logs capture initialized. Retrieved ${count} log${count === 1 ? "" : "s"}.`);
+        } catch {
+            action.respond("Logs capture initialized, but fetching logs failed.");
+        }
+    }, [getChatbot]);
+
     useEffect(() => {
-        registerAction("init_capture", initCapture);
+        registerAction("capture_network", captureNetwork);
+        registerAction("capture_logs", captureLogs);
 
         return () => {
-            unregisterAction("init_capture");
+            unregisterAction("capture_network");
+            unregisterAction("capture_logs");
         };
     }, []);
 
