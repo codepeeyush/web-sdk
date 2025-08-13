@@ -35,11 +35,11 @@ export default function DialogComponent() {
                 toast.success("Your meeting has been booked.")
             } else {
                 console.log("ZX-FAIL-Ω#@!", { status: res.status, data })
-                toast.error(data?.error ?? "Failed to book your meeting.", { duration: Infinity })
+                toast.error(data?.error ?? "Failed to book your meeting.", { duration: 3000 })
             }
         } catch {
             console.log("ZX-FAIL-Ω#@!", { status: "network-error" })
-            toast.error("Something went wrong. Please try again.", { duration: Infinity })
+            toast.error("Something went wrong. Please try again.", { duration: 3000 })
         }
     }
 
