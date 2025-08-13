@@ -106,12 +106,18 @@ export default function Home() {
         try {
             const json = await ygc.execute("network:getEntries", {
                 onlyFailed: true,
+                methods: ["GET", "POST"],
+                urlIncludes: "/api",
+                statusMin: 400,
                 limit: 50,
                 order: "desc",
             });
             const entries = typeof json === "string" ? JSON.parse(json) : json;
+
             console.log("[NetworkAnalyzer] entries", entries);
+
             const count = Array.isArray(entries) ? entries.length : 0;
+
             action.respond(`Network capture initialized. Retrieved ${count} entr${count === 1 ? "y" : "ies"}.`);
         } catch (error) {
             console.warn("[NetworkAnalyzer] getEntries failed", error);
@@ -146,7 +152,7 @@ export default function Home() {
 
         try {
             const json = await ygc.execute("logs:getLogs", {
-                level: parsed.level ?? ["error", "warn"],
+                level: parsed.level ?? ["error", "warn"], // default useful filter
                 from: parsed.from ?? Date.now() - 5 * 60 * 1000,
                 to: parsed.to ?? Date.now(),
                 limit: parsed.limit ?? 100,
