@@ -52,7 +52,6 @@ interface YourGPTExecutor {
     }
   ): Promise<string> | string;
 }
-
 interface ToolFunction {
   arguments: string;
   name: string;
@@ -69,13 +68,6 @@ interface ActionData {
 export function Provider({ children }: { children: React.ReactNode }) {
   const { registerAction, unregisterAction } = useAIActions();
 
-  const getChatbot = useCallback((): YourGPTExecutor | undefined => {
-    if (typeof window === "undefined") return undefined;
-    const w = window as unknown as { $yourgptChatbot?: YourGPTExecutor };
-    return w.$yourgptChatbot;
-  }, []);
-
-
   const captureNetwork = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
     const actionData = data as ActionData;
     const args = actionData.action?.tool?.function?.arguments || `{}`;
@@ -86,23 +78,17 @@ export function Provider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const ygc = getChatbot();
-    if (!ygc) {
+    const chatbot = typeof window !== "undefined"
+      ? (window as unknown as { $yourgptChatbot?: YourGPTExecutor }).$yourgptChatbot
+      : undefined;
+
+    if (!chatbot) {
       action.respond("Chatbot SDK not ready.");
       return;
     }
 
-    await ygc.execute("network:initCapture", {
-      captureOnlyFailed: true,
-      maxEntries: 500,
-      maskHeaderKeys: ["authorization", "cookie", "x-api-key"],
-      maskQueryParamKeys: ["token", "api_key", "access_token"],
-      maskBodyKeys: ["password", "token", "apiKey"],
-      responseBodyMaxBytes: 2048,
-    });
-
     try {
-      const json = await ygc.execute("network:getEntries", {
+      const json = await chatbot.execute("network:getEntries", {
         onlyFailed: true,
         methods: ["GET", "POST"],
         urlIncludes: "/api",
@@ -121,7 +107,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
       console.warn("[NetworkAnalyzer] getEntries failed", error);
       action.respond("Network capture initialized, but fetching entries failed.");
     }
-  }, [getChatbot]);
+  }, []);
 
   const captureLogs = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
     const actionData = data as ActionData;
@@ -140,14 +126,17 @@ export function Provider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const ygc = getChatbot();
-    if (!ygc) {
+    const chatbot = typeof window !== "undefined"
+      ? (window as unknown as { $yourgptChatbot?: YourGPTExecutor }).$yourgptChatbot
+      : undefined;
+
+    if (!chatbot) {
       action.respond("Chatbot SDK not ready.");
       return;
     }
 
     try {
-      const json = await ygc.execute("logs:getLogs", {
+      const json = await chatbot.execute("logs:getLogs", {
         level: parsed.level ?? ["error", "warn"], // default useful filter
         from: parsed.from ?? Date.now() - 5 * 60 * 1000,
         to: parsed.to ?? Date.now(),
@@ -161,7 +150,32 @@ export function Provider({ children }: { children: React.ReactNode }) {
     } catch {
       action.respond("Logs capture initialized, but fetching logs failed.");
     }
-  }, [getChatbot]);
+  }, []);
+
+  useEffect(() => {
+    setTimeout(async () => {
+      const chatbot = typeof window !== "undefined"
+        ? (window as unknown as { $yourgptChatbot?: YourGPTExecutor }).$yourgptChatbot
+        : undefined;
+
+      if (!chatbot) return;
+
+      // Initialize network capture
+      chatbot.execute("network:initCapture", {
+        captureOnlyFailed: true,
+        maxEntries: 500,
+        maskHeaderKeys: ["authorization", "cookie", "x-api-key"],
+        maskQueryParamKeys: ["token", "api_key", "access_token"],
+        maskBodyKeys: ["password", "token", "apiKey"],
+        responseBodyMaxBytes: 2048,
+      });
+      console.log("Initializing network capture...");
+
+      // Initialize logs capture
+      chatbot.execute("logs:initCapture");
+      console.log("Initializing logs capture...");
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     registerAction("capture_network", captureNetwork);
@@ -171,7 +185,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
       unregisterAction("capture_network");
       unregisterAction("capture_logs");
     };
-  }, []);
+  }, [registerAction, unregisterAction, captureNetwork, captureLogs]);
   return (
     <YourGPTProvider
       onError={(error) => {
