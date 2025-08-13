@@ -5,7 +5,7 @@ import { WidgetRenderModeE } from "@yourgpt/widget-web-sdk";
 import { useCallback, useEffect } from "react";
 
 
-interface YourGPTExecutor {
+interface YourGPTChatbotT {
   // Logs
   execute(action: "logs:initCapture"): Promise<void> | void;
   execute(action: "logs:stopCapture"): Promise<void> | void;
@@ -79,7 +79,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
     }
 
     const chatbot = typeof window !== "undefined"
-      ? (window as unknown as { $yourgptChatbot?: YourGPTExecutor }).$yourgptChatbot
+      ? (window as unknown as { $yourgptChatbot?: YourGPTChatbotT }).$yourgptChatbot
       : undefined;
 
     if (!chatbot) {
@@ -127,7 +127,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
     }
 
     const chatbot = typeof window !== "undefined"
-      ? (window as unknown as { $yourgptChatbot?: YourGPTExecutor }).$yourgptChatbot
+      ? (window as unknown as { $yourgptChatbot?: YourGPTChatbotT }).$yourgptChatbot
       : undefined;
 
     if (!chatbot) {
@@ -155,7 +155,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setTimeout(async () => {
       const chatbot = typeof window !== "undefined"
-        ? (window as unknown as { $yourgptChatbot?: YourGPTExecutor }).$yourgptChatbot
+        ? (window as unknown as { $yourgptChatbot?: YourGPTChatbotT }).$yourgptChatbot
         : undefined;
 
       if (!chatbot) return;
