@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import Navbar from "./Navbar";
 import { YourGPTWidget } from "@yourgpt/widget-web-sdk/react";
+import Footer from "./Footer";
 
 export default function AppFrame({ children }: { children: React.ReactNode }) {
     const [isWidgetOpen, setIsWidgetOpen] = useState<boolean>(false);
@@ -16,6 +17,8 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
                     onToggleWidget={() => setIsWidgetOpen((prev) => !prev)}
                 />
                 {children}
+
+            <Footer />
             </div>
 
             {/* AI Widget Sidebar */}
@@ -27,6 +30,7 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
                     <YourGPTWidget />
                 </div>
             </motion.div>
+
         </main>
     );
 }
