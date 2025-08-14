@@ -311,10 +311,12 @@ export default function Content() {
                                 });
                                 const data = await res.json();
                                 if (!res.ok || !data?.success) {
+                                    console.error("[ManageInstance] failed", { status: res.status, data });
                                     toast.error(data?.error ?? "Update failed.");
                                     return;
                                 }
                             } catch {
+                                console.error("[ManageInstance] network-error");
                                 toast.error("Network error while updating instance.");
                             }
                         }}
@@ -565,9 +567,11 @@ export default function Content() {
                                                                     });
                                                                     const data = await res.json();
                                                                     if (!res.ok || !data?.success) {
+                                                                        console.error("[CloneInstance] failed", { status: res.status, data });
                                                                         toast.error(data?.error ?? "Clone failed.");
                                                                     }
                                                                 } catch {
+                                                                    console.error("[CloneInstance] network-error");
                                                                     toast.error("Network error while cloning instance.");
                                                                 }
                                                             }}>Clone</button>
