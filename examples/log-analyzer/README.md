@@ -1,4 +1,4 @@
-# Log Analyzer (AstroHost Example)
+# Log and Network Analyzer (AstroHost Example)
 
 This example demonstrates integrating the YourGPT Widget SDK in a Next.js app to analyze application network traffic and console logs. It embeds the AI widget, registers domain-specific AI actions, and provides a simple hosting dashboard UI (AstroHost) with instance management.
 
@@ -96,22 +96,43 @@ This app exposes two AI actions to YourGPT via `useAIActions()`:
 
 ### capture_network
 
-- Initializes and queries captured network entries via the in-page chatbot SDK.
-- Default filters: only failed requests, GET/POST, URL includes "/api", status >= 400, limit 50, order desc.
-- Response: A short summary with the number of entries found.
+#### Function
+
+- Purpose: Query and summarize captured network entries (useful for spotting failing API calls).
+- Parameters (implicit defaults inside implementation):
+  - `onlyFailed`: boolean (default: true)
+  - `methods`: string[] (default: ["GET", "POST"])
+  - `urlIncludes`: string (default: "/api")
+  - `statusMin`: number (default: 400)
+  - `limit`: number (default: 50)
+  - `order`: "asc" | "desc" (default: "desc")
+- Returns: Brief message with count of entries retrieved.
+
+#### Implementation
 
 ```typescript
 // src/app/provider.tsx (excerpt)
-const json = await chatbot.execute("network:getEntries", {
-  onlyFailed: true,
-  methods: ["GET", "POST"],
-  urlIncludes: "/api",
-  statusMin: 400,
-  limit: 50,
-  order: "desc",
-});
-const entries = typeof json === "string" ? JSON.parse(json) : json;
-action.respond(`Network capture initialized. Retrieved ${Array.isArray(entries) ? entries.length : 0} entr${Array.isArray(entries) && entries.length === 1 ? "y" : "ies"}.`);
+const captureNetwork = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
+  const chatbot = typeof window !== "undefined"
+    ? (window as unknown as { $yourgptChatbot?: YourGPTChatbotT }).$yourgptChatbot
+    : undefined;
+  if (!chatbot) {
+    action.respond("Chatbot SDK not ready.");
+    return;
+  }
+
+  const json = await chatbot.execute("network:getEntries", {
+    onlyFailed: true,
+    methods: ["GET", "POST"],
+    urlIncludes: "/api",
+    statusMin: 400,
+    limit: 50,
+    order: "desc",
+  });
+  const entries = typeof json === "string" ? JSON.parse(json) : json;
+  const count = Array.isArray(entries) ? entries.length : 0;
+  action.respond(`Network capture initialized. Retrieved ${count} entr${count === 1 ? "y" : "ies"}.`);
+}, []);
 ```
 
 Auto-initialization at startup:
@@ -130,25 +151,43 @@ chatbot.execute("network:initCapture", {
 
 ### capture_logs
 
-- Retrieves recent console logs captured on the page (via the chatbot SDK).
-- Parameters (all optional, with safe defaults):
-  - `level`: one or more of `log | error | warn | info | debug` (default: `["error","warn"]`)
-  - `from`/`to`: epoch ms window (default: last 5 minutes)
-  - `limit`: number of logs (default: 100)
-  - `order`: `asc | desc` (default: `desc`)
-- Response: A short summary with the number of logs retrieved.
+#### Function
+
+- Purpose: Retrieve and summarize recent console logs captured on the page.
+- Parameters (all optional, with defaults applied inside implementation):
+  - `level`: ("log" | "error" | "warn" | "info" | "debug")[] — default: ["error", "warn"]
+  - `from`: number (epoch ms) — default: now - 5 minutes
+  - `to`: number (epoch ms) — default: now
+  - `limit`: number — default: 100
+  - `order`: "asc" | "desc" — default: "desc"
+- Returns: Brief message with count of logs retrieved.
+
+#### Implementation
 
 ```typescript
 // src/app/provider.tsx (excerpt)
-const json = await chatbot.execute("logs:getLogs", {
-  level: parsed.level ?? ["error", "warn"],
-  from: parsed.from ?? Date.now() - 5 * 60 * 1000,
-  to: parsed.to ?? Date.now(),
-  limit: parsed.limit ?? 100,
-  order: parsed.order ?? "desc",
-});
-const logs = typeof json === "string" ? JSON.parse(json) : json;
-action.respond(`Logs capture initialized. Retrieved ${Array.isArray(logs) ? logs.length : 0} log${Array.isArray(logs) && logs.length === 1 ? "" : "s"}.`);
+const captureLogs = useCallback(async (data: unknown, action: { respond: (message: string) => void }) => {
+  const actionData = data as ActionData;
+  const args = actionData.action?.tool?.function?.arguments || `{}`;
+  let parsed: { level?: ("log" | "error" | "warn" | "info" | "debug")[]; from?: number; to?: number; limit?: number; order?: "asc" | "desc" } = {};
+  try { parsed = JSON.parse(args); } catch { action.respond("Error parsing arguments."); return; }
+
+  const chatbot = typeof window !== "undefined"
+    ? (window as unknown as { $yourgptChatbot?: YourGPTChatbotT }).$yourgptChatbot
+    : undefined;
+  if (!chatbot) { action.respond("Chatbot SDK not ready."); return; }
+
+  const json = await chatbot.execute("logs:getLogs", {
+    level: parsed.level ?? ["error", "warn"],
+    from: parsed.from ?? Date.now() - 5 * 60 * 1000,
+    to: parsed.to ?? Date.now(),
+    limit: parsed.limit ?? 100,
+    order: parsed.order ?? "desc",
+  });
+  const logs = typeof json === "string" ? JSON.parse(json) : json;
+  const count = Array.isArray(logs) ? logs.length : 0;
+  action.respond(`Logs capture initialized. Retrieved ${count} log${count === 1 ? "" : "s"}.`);
+}, []);
 ```
 
 Auto-initialization at startup:
